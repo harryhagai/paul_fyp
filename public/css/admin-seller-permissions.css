@@ -1,0 +1,35 @@
+.permission-component-card {
+    border: 1px solid var(--adm-border);
+    border-radius: 14px;
+    padding: 14px;
+    background: #fff;
+    height: 100%;
+}
+
+.permission-title {
+    font-weight: 700;
+    color: var(--adm-text);
+    margin-bottom: 2px;
+}
+
+.permission-key {
+    color: var(--adm-primary-dark);
+    font-size: .82rem;
+    margin-bottom: 6px;
+}
+
+.permission-desc {
+    color: var(--adm-muted);
+    font-size: .86rem;
+    line-height: 1.35;
+}
+
+.permission-toggle.form-check-input {
+    width: 2.4rem;
+    height: 1.25rem;
+}
+
+.permission-toggle.form-check-input:checked {
+    background-color: var(--adm-primary);
+    border-color: var(--adm-primary);
+}

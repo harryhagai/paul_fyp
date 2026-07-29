@@ -1,0 +1,406 @@
+
+
+/* Welcome Header Styles */
+.welcome-header {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: white;
+    position: relative;
+    min-height: 200px;
+}
+
+.wave-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.wave-svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 120px;
+}
+
+.wave-svg path {
+    fill: rgba(255, 255, 255, 0.1);
+}
+
+/* Statistics Cards */
+.stat-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+.stat-wave {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100px;
+    height: 30px;
+    opacity: 0.3;
+}
+
+.stat-wave svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Individual wave colors for each tile */
+.stat-wave[data-color="primary"] svg path {
+    fill: #0d6efd !important;
+}
+
+.stat-wave[data-color="success"] svg path {
+    fill: #198754 !important;
+}
+
+.stat-wave[data-color="warning"] svg path {
+    fill: #fd7e14 !important;
+}
+
+.stat-wave[data-color="info"] svg path {
+    fill: #06b6d4 !important;
+}
+
+.stat-wave[data-color="secondary"] svg path {
+    fill: #6c757d !important;
+}
+
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Order List */
+.order-item {
+    transition: all 0.2s ease;
+    border-radius: 10px;
+    margin-bottom: 0;
+}
+
+.order-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Activity List */
+.activity-item {
+    transition: all 0.2s ease;
+    border-radius: 10px;
+    margin-bottom: 0;
+}
+
+.activity-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Product Cards */
+.product-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
+}
+
+.product-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+/* Product List Items */
+.product-item {
+    transition: all 0.2s ease;
+    border-radius: 10px;
+    margin-bottom: 0;
+}
+
+.product-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Low Stock Items */
+.low-stock-item {
+    background: rgba(254, 243, 199, 0.5);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.low-stock-item:hover {
+    background: rgba(254, 243, 199, 0.8);
+}
+
+/* Chart Bars */
+.chart-bar {
+    height: 100px;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+}
+
+.bar-fill {
+    width: 40px;
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    border-radius: 20px 20px 0 0;
+    position: relative;
+    transition: height 0.5s ease;
+    min-height: 5px;
+}
+
+.bar-wave {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(45deg, rgba(255,255,255,0.3) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.3) 75%, transparent 75%);
+    background-size: 20px 20px;
+    animation: wave 2s linear infinite;
+}
+
+@keyframes wave {
+    0% { transform: translateX(-20px); }
+    100% { transform: translateX(20px); }
+}
+
+/* Store Stats */
+.store-stats .stat-row {
+    border-bottom: 1px solid rgba(34, 197, 94, 0.1);
+}
+
+.store-stats .stat-row:last-child {
+    border-bottom: none;
+}
+
+/* Bubble Animations */
+.bubbles-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: float 6s ease-in-out infinite;
+}
+
+.bubble-1 {
+    width: 40px;
+    height: 40px;
+    left: 10%;
+    animation-delay: 0s;
+    animation-duration: 8s;
+}
+
+.bubble-2 {
+    width: 20px;
+    height: 20px;
+    left: 20%;
+    animation-delay: 1s;
+    animation-duration: 6s;
+}
+
+.bubble-3 {
+    width: 30px;
+    height: 30px;
+    left: 35%;
+    animation-delay: 2s;
+    animation-duration: 7s;
+}
+
+.bubble-4 {
+    width: 25px;
+    height: 25px;
+    left: 50%;
+    animation-delay: 0.5s;
+    animation-duration: 9s;
+}
+
+.bubble-5 {
+    width: 35px;
+    height: 35px;
+    left: 65%;
+    animation-delay: 3s;
+    animation-duration: 5s;
+}
+
+.bubble-6 {
+    width: 15px;
+    height: 15px;
+    left: 80%;
+    animation-delay: 1.5s;
+    animation-duration: 8s;
+}
+
+.bubble-7 {
+    width: 45px;
+    height: 45px;
+    left: 90%;
+    animation-delay: 4s;
+    animation-duration: 6s;
+}
+
+.bubble-8 {
+    width: 22px;
+    height: 22px;
+    left: 5%;
+    animation-delay: 2.5s;
+    animation-duration: 7s;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100px) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.5;
+    }
+    90% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Card Bubbles */
+.card-bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.mini-bubble {
+    position: absolute;
+    border-radius: 50%;
+    animation: miniFloat 4s ease-in-out infinite;
+}
+
+.mini-bubble-1 {
+    width: 8px;
+    height: 8px;
+    top: 20%;
+    left: 15%;
+    animation-delay: 0s;
+    animation-duration: 5s;
+}
+
+.mini-bubble-2 {
+    width: 6px;
+    height: 6px;
+    top: 60%;
+    right: 20%;
+    animation-delay: 1s;
+    animation-duration: 6s;
+}
+
+.mini-bubble-3 {
+    width: 10px;
+    height: 10px;
+    bottom: 25%;
+    left: 70%;
+    animation-delay: 2s;
+    animation-duration: 4s;
+}
+
+@keyframes miniFloat {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-10px) scale(1.2);
+        opacity: 0.6;
+    }
+}
+
+/* Ensure cards are above bubbles */
+.stat-card {
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container-fluid {
+        margin-left: 0 !important;
+        padding: 15px !important;
+    }
+
+    .welcome-header {
+        min-height: 150px;
+        padding: 20px 0;
+    }
+
+    .display-4 {
+        font-size: 1.8rem !important;
+    }
+
+    .chart-bar {
+        height: 80px;
+    }
+
+    .bar-fill {
+        width: 30px;
+    }
+
+    .bubbles-background {
+        display: none; /* Hide bubbles on mobile for better performance */
+    }
+}
+
+@media (max-width: 576px) {
+    .order-item {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    .order-details {
+        text-align: left !important;
+    }
+}

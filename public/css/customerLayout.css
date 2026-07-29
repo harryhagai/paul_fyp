@@ -1,0 +1,231 @@
+/* Customer Layout Styles */
+
+/* Main Content Positioning */
+.pb-5 {
+    margin-left: 190px;
+    padding-top: 90px; /* Account for fixed header */
+    padding-bottom: 3rem;
+    transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 992px) {
+    .pb-5 {
+        margin-left: 0;
+        padding-top: 80px;
+    }
+}
+
+/* Content Container */
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Cards Styling */
+.card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+/* Tables Styling */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table thead th {
+    background-color: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+    font-weight: 600;
+    color: #374151;
+    padding: 1rem 0.75rem;
+}
+
+.table tbody td {
+    padding: 1rem 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 111, 145, 0.02);
+}
+
+/* Buttons */
+.btn-primary-custom {
+    background: linear-gradient(135deg, #FF6F91, #ff4d7c);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 111, 145, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-outline-custom {
+    border: 2px solid #FF6F91;
+    color: #FF6F91;
+    background: transparent;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+    background: #FF6F91;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 111, 145, 0.4);
+}
+
+/* Stats Cards */
+.card .fs-1 {
+    font-size: 2.5rem !important;
+    opacity: 0.8;
+    margin-bottom: 1rem;
+}
+
+/* Badges */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+}
+
+/* Form Elements */
+.form-control {
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #FF6F91;
+    box-shadow: 0 0 0 3px rgba(255, 111, 145, 0.1);
+}
+
+/* Product Cards */
+.product-item {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.product-item:hover {
+    border-color: #FF6F91 !important;
+    box-shadow: 0 4px 12px rgba(255, 111, 145, 0.2) !important;
+}
+
+/* Action Buttons */
+.action-buttons {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .pb-5 {
+        padding-top: 100px;
+    }
+
+    .card-header h5 {
+        font-size: 1.1rem;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary-custom,
+    .btn-outline-custom {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding: 0 10px;
+    }
+
+    .pb-5 {
+        padding-top: 90px;
+        padding-bottom: 4rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+}
+
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Stats Cards Grid */
+.stats-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-left: 4px solid #FF6F91;
+}
+
+/* Welcome Section */
+.welcome-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    color: white;
+}
+
+/* Quick Actions Grid */
+.quick-actions .btn {
+    margin-bottom: 0.5rem;
+}

@@ -1,0 +1,319 @@
+.seller-products-page .themed-outline-btn,
+.seller-products-page .btn-outline-primary,
+.seller-products-page .btn-primary,
+.seller-products-page .btn-secondary,
+.seller-products-page .btn-warning,
+.seller-products-page .btn-info {
+    background: transparent;
+    color: var(--teal-primary, #0d9488);
+    border-color: var(--teal-primary, #0d9488);
+}
+
+.seller-products-page .products-page-title {
+    color: var(--teal-primary, #0d9488);
+    font-weight: 600;
+}
+
+.seller-products-page .products-page-subtitle {
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.seller-products-page .btn-outline-info {
+    --bs-btn-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-focus-shadow-rgb: 13, 148, 136 !important;
+    --bs-btn-active-color: #fff !important;
+    --bs-btn-active-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-active-border-color: var(--teal-primary, #0d9488) !important;
+}
+
+/* Force Bootstrap 5 button variables to use DB theme color */
+.seller-products-page .btn-outline-primary,
+.seller-products-page .themed-outline-btn,
+.seller-products-page .db-primary-btn {
+    --bs-btn-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-focus-shadow-rgb: 13, 148, 136 !important;
+    --bs-btn-active-color: #fff !important;
+    --bs-btn-active-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-active-border-color: var(--teal-primary, #0d9488) !important;
+}
+
+/* Modals are outside .seller-products-page wrapper, so theme them directly */
+#addProductModal .btn-outline-primary,
+#editProductModal .btn-outline-primary,
+#addProductModal .db-primary-btn,
+#editProductModal .db-primary-btn {
+    --bs-btn-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-focus-shadow-rgb: 13, 148, 136 !important;
+    --bs-btn-active-color: #fff !important;
+    --bs-btn-active-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-active-border-color: var(--teal-primary, #0d9488) !important;
+}
+
+.seller-products-page .form-check-input:checked {
+    background-color: var(--teal-primary, #0d9488) !important;
+    border-color: var(--teal-primary, #0d9488) !important;
+}
+
+.seller-products-page .form-check-input:focus {
+    border-color: var(--teal-primary, #0d9488) !important;
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--teal-primary, #0d9488) 20%, transparent) !important;
+}
+
+.seller-products-page .themed-outline-btn:hover,
+.seller-products-page .btn-outline-primary:hover,
+.seller-products-page .btn-primary:hover,
+.seller-products-page .btn-secondary:hover,
+.seller-products-page .btn-warning:hover,
+.seller-products-page .btn-info:hover {
+    background: var(--teal-primary, #0d9488);
+    color: #fff;
+    border-color: var(--teal-primary, #0d9488);
+}
+
+.seller-products-page .db-primary-btn {
+    color: var(--teal-primary, #0d9488) !important;
+    border-color: var(--teal-primary, #0d9488) !important;
+}
+
+.seller-products-page .db-primary-btn:hover,
+.seller-products-page .db-primary-btn:focus {
+    background: var(--teal-primary, #0d9488) !important;
+    border-color: var(--teal-primary, #0d9488) !important;
+    color: #fff !important;
+}
+
+.seller-products-page .thumbnail-preview {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    cursor: pointer;
+}
+
+.seller-products-page .thumbnail-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e2e8f0;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.seller-products-page .stock-indicator {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.seller-products-page .stock-low { background-color: #fef3c7; color: #92400e; }
+.seller-products-page .stock-medium { background-color: #fef9c3; color: #854d0e; }
+.seller-products-page .stock-high { background-color: #dcfce7; color: #166534; }
+
+.seller-products-page .discount-badge {
+    background: rgba(220, 53, 69, 0.12);
+    color: #b4232f;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.seller-products-page .action-btn { transition: transform .15s ease; }
+.seller-products-page .action-btn:hover { transform: translateY(-1px); }
+
+.seller-products-page .lazy-sentinel {
+    width: 100%;
+    height: 1px;
+}
+
+#addProductModal .modal-title,
+#addProductModal .modal-title i {
+    color: var(--teal-primary, #0d9488);
+}
+
+#editProductModal .modal-title,
+#editProductModal .modal-title i {
+    color: var(--teal-primary, #0d9488);
+}
+
+#viewProductModal #viewPrice {
+    color: var(--teal-secondary, #0f766e);
+    border-color: color-mix(in srgb, var(--teal-primary, #0d9488) 25%, #cbd5e1);
+}
+
+#viewProductModal .view-chip {
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0.38rem 0.68rem;
+    border: 1px solid transparent;
+}
+
+#viewProductModal .view-chip-primary {
+    color: #fff;
+    background: var(--teal-primary, #0d9488);
+    border-color: var(--teal-primary, #0d9488);
+}
+
+#viewProductModal .view-chip-primary-soft {
+    color: var(--teal-secondary, #0f766e);
+    background: color-mix(in srgb, var(--teal-bg, #f0fdfa) 85%, #fff);
+    border-color: color-mix(in srgb, var(--teal-primary, #0d9488) 35%, #d1fae5);
+}
+
+#viewProductModal .view-chip-muted {
+    color: #334155;
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+#viewProductModal .view-product-image {
+    width: 140px;
+    height: 140px;
+    border-radius: 10px;
+    object-fit: contain;
+    background: #fff;
+    padding: 4px;
+}
+
+#viewProductModal .view-product-block {
+    min-height: 255px;
+    display: flex;
+    flex-direction: column;
+}
+
+#viewProductModal .view-product-image-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+#viewProductModal .view-product-meta {
+    margin-top: auto;
+}
+
+.swal2-popup .swal-btn-primary {
+    background: var(--teal-primary, #0d9488) !important;
+    border-color: var(--teal-primary, #0d9488) !important;
+    color: #fff !important;
+}
+
+.swal2-popup .swal-btn-outline {
+    background: transparent !important;
+    border: 1px solid var(--teal-primary, #0d9488) !important;
+    color: var(--teal-primary, #0d9488) !important;
+}
+
+.category-delete-popup {
+    border-radius: 20px;
+    width: 420px;
+    max-width: calc(100vw - 2rem);
+    padding: 0.85rem 0.75rem 1rem;
+}
+
+.category-delete-icon.swal2-icon.swal2-warning {
+    border-color: #e8b07a;
+    color: #e8b07a;
+}
+
+.category-delete-icon.swal2-icon.swal2-warning .swal2-icon-content {
+    color: #e8b07a;
+}
+
+.category-delete-title {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: #4b5563;
+}
+
+.category-delete-text {
+    font-size: 0.96rem;
+    color: #6b7280;
+}
+
+.category-delete-actions {
+    gap: 0.75rem;
+}
+
+.category-delete-confirm,
+.category-delete-cancel {
+    background: transparent;
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 0.65rem 1.35rem;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.category-delete-confirm {
+    border-color: var(--teal-primary, #0d9488);
+    color: var(--teal-primary, #0d9488);
+}
+
+.category-delete-confirm:hover {
+    background: var(--teal-primary, #0d9488);
+    color: #fff;
+}
+
+.category-delete-cancel {
+    border-color: #6b7280;
+    color: #6b7280;
+}
+
+.category-delete-cancel:hover {
+    background: #6b7280;
+    color: #fff;
+}
+
+.seller-products-page .products-empty-state {
+    max-width: 360px;
+    border: 1px dashed color-mix(in srgb, var(--teal-primary, #0d9488) 35%, #cbd5e1);
+    background: color-mix(in srgb, var(--teal-bg, #f0fdfa) 75%, #fff);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.seller-products-page .products-empty-icon-wrap {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 0.5rem;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--teal-primary, #0d9488) 15%, #fff);
+}
+
+.seller-products-page .products-empty-icon {
+    font-size: 1.4rem;
+    color: var(--teal-primary, #0d9488);
+}
+
+.seller-products-page .products-empty-title {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.seller-products-page .products-empty-text {
+    color: #64748b;
+    font-size: 0.9rem;
+}

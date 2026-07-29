@@ -1,0 +1,30 @@
+.ops-kpi-label { font-size: .75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .06em; }
+.ops-kpi-value { font-size: 1.8rem; font-weight: 800; color: #0f172a; line-height: 1.15; }
+.ops-kpi-sub { font-size: .82rem; color: #64748b; }
+.ops-status { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; background: #fff; }
+.ops-status-head { font-size: .82rem; color: #475569; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.ops-status-value { font-size: 1.05rem; font-weight: 700; color: #0f172a; }
+.ops-badge { display:inline-block; padding:4px 8px; border-radius:999px; font-size:.72rem; font-weight:700; }
+.ops-ok { background:#ecfdf3; color:#15803d; }
+.ops-warn { background:#fff7ed; color:#c2410c; }
+.ops-neutral { background:#f1f5f9; color:#334155; }
+.ops-chart-wrap { height: 300px; }
+.ops-table th { font-size:.74rem; color:#64748b; text-transform:uppercase; letter-spacing:.05em; font-weight:700; }
+.ops-table td { font-size:.9rem; color:#0f172a; }
+.ops-section-title { margin:0; font-size:1rem; font-weight:700; color:#0f172a; }
+
+/* Fit dashboard in seller main content cleanly */
+.admin-shell.admin-shell-fit {
+    margin-left: 0;
+    width: 100%;
+    max-width: none;
+    padding: 24px 12px 16px;
+}
+
+@media (max-width: 768px) {
+    .admin-shell.admin-shell-fit {
+        margin-left: 0;
+        width: 100%;
+        padding: 16px 10px 8px;
+    }
+}

@@ -1,0 +1,274 @@
+<header id="main-header" class="d-flex align-items-center justify-content-between bg-white border-bottom shadow-sm px-3">
+    <div class="d-flex align-items-center">
+        <!-- Sidebar toggle button for mobile -->
+        <button id="sidebarToggle" class="btn btn-outline-secondary d-md-none me-3" type="button" aria-label="Toggle sidebar">
+            <i class="bi bi-list fs-4"></i>
+        </button>
+
+                <!-- Title -->
+        <span class="subheading ms-2 fs-5 fw-bold text-primary">
+            Kids Shop - Seller Dashboard
+        </span>
+    </div>
+
+    <!-- Right side icons -->
+    <div class="d-flex align-items-center">
+        <!-- Notifications -->
+        <div class="dropdown me-3">
+        <a href="#" class="btn btn-light position-relative rounded-circle d-flex align-items-center justify-content-center" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px;" title="Notifications">
+            <i class="bi bi-bell text-primary"></i>
+            @php
+                $unreadQuery = \App\Models\Notification::where(function ($query) {
+                    $query->whereNull('expires_at')
+                          ->orWhere('expires_at', '>', now());
+                })->unread();
+
+                if (Auth::user()->role !== 'seller') {
+                    $unreadQuery->where('user_id', Auth::id());
+                }
+
+                $unreadCount = $unreadQuery->count();
+            @endphp
+            @if($unreadCount > 0)
+            <span id="notification-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem; padding: 0.2em 0.5em;">
+                {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                <span class="visually-hidden">unread notifications</span>
+            </span>
+            @endif
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end notification-dropdown shadow-lg" aria-labelledby="notificationDropdown" style="width: 350px; max-height: 400px; overflow-y: auto;">
+            <li class="dropdown-header">
+                <h6 class="mb-0">Notifications</h6>
+            </li>
+            @php
+                $recentQuery = \App\Models\Notification::where(function ($query) {
+                    $query->whereNull('expires_at')
+                          ->orWhere('expires_at', '>', now());
+                })->latest()->take(3);
+
+                if (Auth::user()->role !== 'seller') {
+                    $recentQuery->where('user_id', Auth::id());
+                }
+
+                $recentNotifications = $recentQuery->get();
+                // Debug: show count
+                // echo "<!-- DEBUG: Found {$recentNotifications->count()} notifications -->";
+            @endphp
+            @if($recentNotifications->count() > 0)
+                @foreach($recentNotifications as $notification)
+                    <li>
+                        <a class="dropdown-item {{ $notification->read_at ? '' : 'unread' }}" href="{{ route('seller.notifications.show', $notification->id) }}">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold">{{ $notification->title }}</div>
+                                    <small class="text-muted">{{ Str::limit($notification->message, 50) }}</small>
+                                    <br>
+                                    <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                </div>
+                                @if(!$notification->read_at)
+                                    <div class="ms-2">
+                                        <span class="badge bg-primary rounded-pill">New</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </a>
+                    </li>
+                @endforeach
+                <li><hr class="dropdown-divider"></li>
+                <li class="p-2">
+                    <a class="btn btn-primary btn-sm w-100" href="{{ route('seller.notifications.index') }}">
+                        <i class="bi bi-eye me-1"></i>View All Notifications
+                    </a>
+                </li>
+            @else
+                <li>
+                    <a class="dropdown-item text-center text-muted" href="#">
+                        No notifications
+                    </a>
+                </li>
+            @endif
+        </ul>
+        </div>
+
+        <!-- Profile section -->
+        <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="me-2 d-none d-md-inline">{{ Auth::check() && Auth::user() ? Auth::user()->name : '' }}</span>
+            @if(Auth::check() && Auth::user() && Auth::user()->profile_photo)
+                <img src="{{ asset('storage/profile_photos/' . Auth::user()->profile_photo) }}"
+                     alt="Profile Picture" class="profile-avatar" />
+            @else
+                @php $displayName = Auth::check() && Auth::user() ? Auth::user()->name : 'User'; @endphp
+                <img src="https://ui-avatars.com/api/?name={{ urlencode($displayName) }}&background=667eea&color=fff&size=40"
+                     alt="Profile Picture" class="profile-avatar" />
+            @endif
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+            <li>
+                <a class="dropdown-item d-flex align-items-center" href="{{ route('seller.profile') }}">
+                    <i class="bi bi-person-fill text-primary me-2"></i> My Profile
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="dropdown-item d-flex align-items-center">
+                        <i class="bi bi-box-arrow-right text-danger me-2"></i> Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+        </div>
+    </div>
+</header>
+
+<style>
+.notification-dropdown .dropdown-item.unread {
+    background-color: #f8f9ff;
+    border-left: 3px solid #0d6efd;
+}
+
+.notification-dropdown .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-dropdown .dropdown-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+}
+
+.btn-light:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e9ecef;
+}
+</style>
+
+<script>
+// Real-time notification updates every 3 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    // Update notifications immediately and then every 3 seconds
+    updateNotifications();
+    setInterval(updateNotifications, 3000);
+});
+
+// Manual test functions for debugging (can be called from browser console)
+window.testNotifications = function() {
+    console.log('Manually testing notifications...');
+    updateNotifications();
+};
+
+window.testBadge = function(count) {
+    console.log('Manually testing badge with count:', count);
+    updateNotificationBadge(count);
+};
+
+function updateNotifications() {
+    $.ajax({
+        url: '/api/notifications/unread-count',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            updateNotificationBadge(data.count);
+            updateNotificationDropdown();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error updating notifications:', error);
+        }
+    });
+}
+
+function updateNotificationBadge(count) {
+    const countText = count > 99 ? '99+' : count;
+    const badge = document.getElementById('notification-badge');
+    const sidebarBadge = document.getElementById('sidebar-notification-badge');
+
+    if (count > 0) {
+        // Show/update header badge
+        if (badge) {
+            badge.textContent = countText;
+            badge.style.display = 'inline-block';
+        }
+
+        // Show/update sidebar badge
+        if (sidebarBadge) {
+            sidebarBadge.textContent = countText;
+            sidebarBadge.style.display = 'inline-block';
+        }
+    } else {
+        // Hide badges when count is 0
+        if (badge) {
+            badge.style.display = 'none';
+        }
+        if (sidebarBadge) {
+            sidebarBadge.style.display = 'none';
+        }
+    }
+}
+
+function updateNotificationDropdown() {
+    // Fetch recent notifications
+    $.ajax({
+        url: '/api/notifications/recent',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            const dropdownMenu = document.querySelector('.notification-dropdown');
+            if (!dropdownMenu) return;
+
+            // Update the notification items (keep header and footer)
+            const existingItems = dropdownMenu.querySelectorAll('li:not(.dropdown-header)');
+            existingItems.forEach(item => {
+                // Keep only items that contain "View All" in the link text
+                const link = item.querySelector('a');
+                if (!link || !link.textContent.includes('View All')) {
+                    item.remove();
+                }
+            });
+
+            // Insert new notifications before the "View All" link
+            const viewAllLink = dropdownMenu.querySelector('a');
+            let viewAllLi = null;
+            if (viewAllLink && viewAllLink.textContent.includes('View All')) {
+                viewAllLi = viewAllLink.closest('li');
+            }
+            if (viewAllLink && data.notifications && data.notifications.length > 0) {
+                data.notifications.forEach(notification => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <a class="dropdown-item ${notification.read_at ? '' : 'unread'}" href="/seller/notifications/${notification.id}">
+                            <div class="d-flex">
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold">${notification.title}</div>
+                                    <small class="text-muted">${notification.message.length > 50 ? notification.message.substring(0, 50) + '...' : notification.message}</small>
+                                    <br>
+                                    <small class="text-muted">${new Date(notification.created_at).toLocaleString()}</small>
+                                </div>
+                                ${!notification.read_at ? '<div class="ms-2"><span class="badge bg-primary rounded-pill">New</span></div>' : ''}
+                            </div>
+                        </a>
+                    `;
+                    viewAllLink.parentNode.before(li);
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error updating notification dropdown:', error);
+        }
+    });
+}
+
+
+
+
+</script>

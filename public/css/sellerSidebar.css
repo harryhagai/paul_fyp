@@ -1,0 +1,303 @@
+:root {
+  --sidebar-width: 190px;
+  --header-height: 60px;
+  --transition-speed: 0.3s;
+  --brand-primary: var(--teal-primary, #0d9488);
+  --brand-primary-dark: var(--teal-secondary, #0f766e);
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #e2e8f0;
+  --sidebar-shadow: 2px 0 10px rgba(15, 23, 42, 0.08);
+  --active-shadow: 2px 0 18px rgba(15, 23, 42, 0.18);
+  --nav-item-hover: color-mix(in srgb, var(--teal-bg, #f0fdfa) 70%, white);
+}
+
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  box-shadow: var(--sidebar-shadow);
+  padding: 1rem 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1030;
+  transition: left var(--transition-speed) ease, width var(--transition-speed) ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#sidebar.collapsed {
+  width: 72px;
+}
+
+#sidebar.collapsed .p-3 {
+  padding: 0.75rem 0.45rem !important;
+}
+
+.seller-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.seller-sidebar-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid #dbeafe;
+  flex-shrink: 0;
+}
+
+.seller-sidebar-brand-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.seller-sidebar-brand-subtitle {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+#sidebar .nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+}
+
+#sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.58rem 0.6rem 0.58rem 0.8rem;
+  border-radius: 0.5rem;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all var(--transition-speed) ease;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#sidebar .sidebar-section-label {
+  padding: 0.65rem 0.8rem 0.2rem;
+  color: #94a3b8;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#sidebar button.nav-link {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+
+#sidebar .nav-link .bi {
+  font-size: 1rem;
+  min-width: 20px;
+  color: var(--brand-primary-dark);
+  flex-shrink: 0;
+}
+
+#sidebar .nav-link:hover {
+  background-color: var(--nav-item-hover);
+  transform: translateX(3px);
+  color: #0f172a;
+}
+
+#sidebar .nav-link.active {
+  background: linear-gradient(135deg, var(--brand-primary-dark), var(--brand-primary)) !important;
+  color: #fff !important;
+}
+
+#sidebar .nav-link.active .bi {
+  color: #fff !important;
+}
+
+#sidebar .sidebar-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+#sidebar .sidebar-menu-toggle span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#sidebar .sidebar-menu-chevron {
+  margin-left: auto;
+  min-width: auto !important;
+  font-size: 0.82rem !important;
+  transition: transform var(--transition-speed) ease;
+}
+
+#sidebar .sidebar-menu-toggle[aria-expanded="true"] .sidebar-menu-chevron {
+  transform: rotate(180deg);
+}
+
+#sidebar .sidebar-submenu {
+  margin-left: 0.4rem;
+  padding-left: 0.55rem;
+  border-left: 1px solid color-mix(in srgb, var(--brand-primary) 28%, #e2e8f0);
+}
+
+#sidebar .sidebar-submenu-link {
+  padding-left: 0.65rem;
+  font-size: 0.84rem;
+  border-radius: 0.45rem;
+}
+
+#sidebar .sidebar-submenu-link .bi {
+  font-size: 0.94rem;
+  min-width: 18px;
+}
+
+#sidebar.collapsed .seller-sidebar-brand {
+  justify-content: center;
+  margin-bottom: 0.75rem !important;
+}
+
+#sidebar.collapsed .seller-sidebar-logo {
+  width: 36px;
+  height: 36px;
+}
+
+#sidebar.collapsed .seller-sidebar-brand-text {
+  display: none;
+}
+
+#sidebar.collapsed .sidebar-section-label {
+  display: none;
+}
+
+#sidebar.collapsed .nav-link {
+  justify-content: center;
+  gap: 0;
+  padding: 0.62rem 0.25rem;
+  font-size: 0 !important;
+}
+
+#sidebar.collapsed .nav-link .bi {
+  font-size: 1.08rem;
+  min-width: auto;
+  margin: 0;
+}
+
+#sidebar.collapsed .sidebar-menu-chevron,
+#sidebar.collapsed .sidebar-submenu {
+  display: none !important;
+}
+
+#sidebar.collapsed .seller-sidebar-footer-full {
+  display: none;
+}
+
+#sidebar.collapsed .seller-sidebar-footer-compact {
+  display: inline;
+}
+
+.seller-sidebar-footer {
+  padding: 0.75rem 1rem 1rem;
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.seller-sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.sidebar-logout-link {
+  color: #dc3545 !important;
+}
+
+.sidebar-logout-link .bi {
+  color: #dc3545 !important;
+}
+
+.sidebar-logout-link:hover,
+.sidebar-logout-link:focus {
+  background-color: rgba(220, 53, 69, 0.12) !important;
+  color: #b02a37 !important;
+}
+
+.sidebar-logout-link:hover .bi,
+.sidebar-logout-link:focus .bi {
+  color: #b02a37 !important;
+}
+
+.seller-sidebar-footer-compact {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  #sidebar { left: calc(-1 * var(--sidebar-width)); width: var(--sidebar-width); }
+  #sidebar.active { left: 0; box-shadow: var(--active-shadow); z-index: 1050; }
+  #sidebar.collapsed { width: var(--sidebar-width); }
+  .seller-sidebar-footer-full { display: none; }
+  .seller-sidebar-footer-compact { display: inline; }
+}
+
+@media (min-width: 769px) {
+  #sidebar { left: 0 !important; }
+}
+
+#sidebar .nav-link {
+  position: relative;
+}
+
+#sidebar .nav-link .sidebar-link-spinner {
+  display: none;
+  align-items: center;
+  gap: 3px;
+  color: currentColor;
+  margin-left: auto;
+  padding-left: 8px;
+  flex-shrink: 0;
+}
+
+#sidebar .nav-link .sidebar-link-spinner span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: sidebarDotPulse 0.9s infinite ease-in-out;
+}
+
+#sidebar .nav-link .sidebar-link-spinner span:nth-child(2) { animation-delay: 0.15s; }
+#sidebar .nav-link .sidebar-link-spinner span:nth-child(3) { animation-delay: 0.3s; }
+
+#sidebar .nav-link.sidebar-loading {
+  pointer-events: none;
+  opacity: 0.88;
+}
+
+#sidebar .nav-link.sidebar-loading .sidebar-link-spinner {
+  display: inline-flex;
+}
+
+@keyframes sidebarDotPulse {
+  0%, 80%, 100% {
+    transform: scale(0.75);
+    opacity: 0.25;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

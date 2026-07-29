@@ -1,0 +1,161 @@
+.seller-notifications-page .notifications-page-title {
+    color: var(--teal-primary, #0d9488);
+    font-weight: 600;
+}
+
+.seller-notifications-page .notifications-page-subtitle {
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.seller-notifications-page .themed-outline-btn,
+.seller-notifications-page .btn-outline-primary {
+    --bs-btn-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-border-color: var(--teal-primary, #0d9488) !important;
+}
+
+.seller-notifications-page .notification-detail-card,
+.seller-notifications-page .notifications-list-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.seller-notifications-page .notification-detail-card .card-header,
+.seller-notifications-page .notifications-list-card .card-header {
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.seller-notifications-page .notifications-list-wrap {
+    max-height: 560px;
+    overflow: auto;
+    padding: 0.65rem;
+}
+
+.seller-notifications-page .notification-list-item {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    text-align: left;
+    padding: 0.7rem;
+    margin-bottom: 0.6rem;
+}
+
+.seller-notifications-page .notification-list-item.active,
+.seller-notifications-page .notification-list-item:hover {
+    border-color: color-mix(in srgb, var(--teal-primary, #0d9488) 35%, #cbd5e1);
+    background: color-mix(in srgb, var(--teal-bg, #f0fdfa) 72%, #fff);
+}
+
+.seller-notifications-page .notification-list-title {
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 0.92rem;
+}
+
+.seller-notifications-page .notification-list-text,
+.seller-notifications-page .notification-list-time {
+    color: #64748b;
+    font-size: 0.82rem;
+}
+
+.seller-notifications-page .notification-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--teal-primary, #0d9488);
+    margin-top: 4px;
+}
+
+.seller-notifications-page .notification-detail-wrap {
+    min-height: 500px;
+}
+
+.seller-notifications-page .notification-title {
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.seller-notifications-page .notification-detail-message {
+    color: #334155;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.seller-notifications-page .notification-badge-new {
+    background: var(--teal-primary, #0d9488);
+    color: #fff;
+}
+
+.seller-notifications-page .notification-badge-priority.priority-high {
+    background: #fff1f2;
+    color: #be123c;
+    border: 1px solid #fecdd3;
+}
+
+.seller-notifications-page .notification-badge-priority.priority-medium {
+    background: #fff7ed;
+    color: #9a3412;
+    border: 1px solid #fed7aa;
+}
+
+.seller-notifications-page .notification-badge-priority.priority-low {
+    background: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.seller-notifications-page .notifications-empty-state {
+    max-width: 420px;
+    border: 1px dashed color-mix(in srgb, var(--teal-primary, #0d9488) 35%, #cbd5e1);
+    background: color-mix(in srgb, var(--teal-bg, #f0fdfa) 75%, #fff);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.seller-notifications-page .notifications-empty-icon-wrap {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto .5rem;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--teal-primary, #0d9488) 15%, #fff);
+}
+
+.seller-notifications-page .notifications-empty-icon { font-size: 1.5rem; color: var(--teal-primary, #0d9488); }
+.seller-notifications-page .notifications-empty-title { color: #0f172a; font-weight: 600; }
+.seller-notifications-page .notifications-empty-text { color: #64748b; font-size: .92rem; }
+
+.category-delete-popup {
+    border-radius: 20px;
+    width: 420px;
+    max-width: calc(100vw - 2rem);
+    padding: 0.85rem 0.75rem 1rem;
+}
+.category-delete-icon.swal2-icon.swal2-warning { border-color: #e8b07a; color: #e8b07a; }
+.category-delete-icon.swal2-icon.swal2-warning .swal2-icon-content { color: #e8b07a; }
+.category-delete-title { font-size: 1.6rem; font-weight: 400; color: #4b5563; }
+.category-delete-text { font-size: 0.96rem; color: #6b7280; }
+.category-delete-actions { gap: 0.75rem; }
+.category-delete-confirm,.category-delete-cancel { background: transparent; border: 1px solid; border-radius: 10px; padding: 0.65rem 1.35rem; font-weight: 400; line-height: 1; }
+.category-delete-confirm { border-color: var(--teal-primary, #0d9488); color: var(--teal-primary, #0d9488); }
+.category-delete-confirm:hover { background: var(--teal-primary, #0d9488); color: #fff; }
+.category-delete-cancel { border-color: #6b7280; color: #6b7280; }
+.category-delete-cancel:hover { background: #6b7280; color: #fff; }
+
+@media (max-width: 991px) {
+    .seller-notifications-page .notification-detail-wrap {
+        min-height: auto;
+    }
+
+    .seller-notifications-page .notifications-list-wrap {
+        max-height: 420px;
+    }
+}

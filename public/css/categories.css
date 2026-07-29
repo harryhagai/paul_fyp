@@ -1,0 +1,122 @@
+.categories-page {
+    background-color: var(--teal-bg, #f8fafc);
+    min-height: calc(100vh - 160px);
+}
+
+.categories-breadcrumb {
+    background-color: transparent;
+    padding: 0;
+}
+
+.categories-breadcrumb .breadcrumb-item a {
+    color: var(--teal-primary, #2563eb);
+    text-decoration: none;
+}
+
+.categories-breadcrumb .breadcrumb-item.active {
+    color: #475569;
+}
+
+.categories-title {
+    color: var(--teal-primary, #2563eb);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.categories-subtitle {
+    color: #64748b;
+}
+
+.categories-search-wrap {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+}
+
+.categories-search-input {
+    border-color: #cbd5e1;
+}
+
+.categories-search-input:focus {
+    border-color: var(--teal-primary, #2563eb);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.2);
+}
+
+.categories-search-btn {
+    background-color: var(--teal-primary, #2563eb);
+    border-color: var(--teal-primary, #2563eb);
+    color: #fff;
+    min-width: 44px;
+}
+
+.categories-search-btn:hover,
+.categories-search-btn:focus {
+    background-color: var(--teal-secondary, #0ea5a4);
+    border-color: var(--teal-secondary, #0ea5a4);
+    color: #fff;
+}
+
+.category-tile {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.9rem;
+    color: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.category-tile:hover {
+    border-color: var(--teal-primary, #2563eb);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.category-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: rgba(37, 99, 235, 0.12);
+    color: var(--teal-primary, #2563eb);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.category-name {
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.category-description {
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.category-meta {
+    color: var(--teal-primary, #2563eb);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.categories-empty {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.9rem;
+}
+
+.categories-empty i {
+    font-size: 2rem;
+    color: var(--teal-primary, #2563eb);
+}
+
+@media (max-width: 575.98px) {
+    .category-name {
+        font-size: 0.95rem;
+    }
+
+    .category-description {
+        font-size: 0.82rem;
+    }
+}

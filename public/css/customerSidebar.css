@@ -1,0 +1,207 @@
+/* Ensure all sidebar nav-items have a unique background color when active */
+#sidebar .nav-item .nav-link.active {
+  color: #fff !important;
+}
+#sidebar .nav-item:nth-child(1) .nav-link.active { background-color: #4e73df !important; }
+#sidebar .nav-item:nth-child(2) .nav-link.active { background-color: #1cc88a !important; }
+#sidebar .nav-item:nth-child(3) .nav-link.active { background-color: #f6c23e !important; color: #000 !important; }
+#sidebar .nav-item:nth-child(3) .nav-link.active .bi { color: #000 !important; }
+#sidebar .nav-item:nth-child(4) .nav-link.active { background-color: #36b9cc !important; }
+#sidebar .nav-item:nth-child(5) .nav-link.active { background-color: #e83e8c !important; }
+#sidebar .nav-item:nth-child(6) .nav-link.active { background-color: #6f42c1 !important; }
+#sidebar .nav-item:nth-child(7) .nav-link.active { background-color: #6f42c1 !important; }
+#sidebar .nav-item:nth-child(8) .nav-link.active { background-color: #20c997 !important; }
+#sidebar .nav-item:nth-child(9) .nav-link.active { background-color: #fd7e14 !important; }
+#sidebar .nav-item:nth-child(10) .nav-link.active { background-color: #fd7e14 !important; }
+#sidebar .nav-item:nth-child(11) .nav-link.active { background-color: #17a2b8 !important; }
+#sidebar .nav-item:nth-child(12) .nav-link.active { background-color: #6c757d !important; }
+#sidebar .nav-item:nth-child(13) .nav-link.active { background-color: #ffc107 !important; color: #000 !important; }
+#sidebar .nav-item:nth-child(13) .nav-link.active .bi { color: #000 !important; }
+#sidebar .nav-item:nth-child(14) .nav-link.active { background-color: #0d6efd !important; }
+/* Sidebar icon colors by icon type */
+#sidebar .bi-speedometer2 { color: #4e73df; }
+#sidebar .bi-calendar-range { color: #1cc88a; }
+#sidebar .bi-clipboard2-data { color: #f6c23e; }
+#sidebar .bi-person-badge-fill { color: #36b9cc; }
+#sidebar .bi-collection { color: #e83e8c; }
+#sidebar .bi-folder-check { color: #6f42c1; }
+#sidebar .bi-dot { color: #adb5bd; }
+#sidebar .bi-journal-bookmark-fill { color: #20c997; }
+#sidebar .bi-list-check { color: #fd7e14; }
+#sidebar .bi-person-lines-fill { color: #17a2b8; }
+#sidebar .bi-bar-chart-line { color: #6c757d; }
+#sidebar .bi-file-earmark-pdf { color: #ffc107; }
+#sidebar .bi-megaphone { color: #0d6efd; }
+:root {
+  --sidebar-width: 190px;
+  --header-height: 60px;
+  --transition-speed: 0.3s;
+  --sidebar-bg: #f8f9fa;
+  --sidebar-border: #dee2e6;
+  --sidebar-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+  --active-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+  --nav-item-hover: rgba(0, 0, 0, 0.05);
+}
+
+/* SIDEBAR BASE */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  box-shadow: var(--sidebar-shadow);
+  padding: 1rem 0;
+  overflow-y: auto;
+  z-index: 1030;
+  transition: left var(--transition-speed) ease;
+}
+
+/* SIDEBAR TITLE */
+#sidebar h6 {
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #4a4a4a;
+  font-weight: 600;
+}
+
+/* NAVIGATION */
+#sidebar .nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+}
+
+#sidebar .nav-item {
+  width: 100%;
+}
+
+#sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+  margin: 0;
+  border-radius: 0.25rem;
+  color: #212529;
+  font-size: 0.85rem;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all var(--transition-speed) ease;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ICONS */
+#sidebar .nav-link .bi {
+  font-size: 1rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* INDIVIDUAL ICON COLORS */
+#sidebar .nav-item:nth-child(1) .bi { color: #4e73df; }  /* Dashboard */
+#sidebar .nav-item:nth-child(2) .bi { color: #1cc88a; }  /* O-Level App */
+#sidebar .nav-item:nth-child(3) .bi { color: #f6c23e; }  /* A-Level App */
+#sidebar .nav-item:nth-child(4) .bi { color: #36b9cc; }  /* O-Basic Subject */
+#sidebar .nav-item:nth-child(5) .bi { color: #e83e8c; }  /* O-Optional Subject */
+#sidebar .nav-item:nth-child(6) .bi { color: #6f42c1; }  /* O-Subject Sets */
+
+/* HOVER EFFECT */
+#sidebar .nav-link:hover {
+  background-color: var(--nav-item-hover);
+  transform: translateX(3px);
+  color: #000;
+}
+
+/* ACTIVE STYLES */
+#sidebar .nav-link.active {
+  font-weight: 10;
+  color: #fff !important;
+}
+
+#sidebar .nav-link.active .bi {
+  color: #fff !important;
+}
+
+/* ACTIVE BACKGROUND COLORS PER ITEM */
+#sidebar .nav-item:nth-child(1) .nav-link.active {
+  background-color: #4e73df !important;
+}
+#sidebar .nav-item:nth-child(2) .nav-link.active {
+  background-color: #1cc88a !important;
+}
+#sidebar .nav-item:nth-child(3) .nav-link.active {
+  background-color: #f6c23e !important;
+  color: #000 !important;
+}
+#sidebar .nav-item:nth-child(3) .nav-link.active .bi {
+  color: #000 !important;
+}
+#sidebar .nav-item:nth-child(4) .nav-link.active {
+  background-color: #36b9cc !important;
+}
+#sidebar .nav-item:nth-child(5) .nav-link.active {
+  background-color: #e83e8c !important;
+}
+#sidebar .nav-item:nth-child(6) .nav-link.active {
+  background-color: #6f42c1 !important;
+}
+
+/* OPTIONAL: Force white icons for active */
+#sidebar .nav-item:nth-child(4) .nav-link.active .bi,
+#sidebar .nav-item:nth-child(5) .nav-link.active .bi,
+#sidebar .nav-item:nth-child(6) .nav-link.active .bi {
+  color: #fff !important;
+}
+
+/* RESPONSIVE: MOBILE */
+@media (max-width: 768px) {
+  #sidebar {
+    left: calc(-1 * var(--sidebar-width));
+  }
+
+  #sidebar.active {
+    left: 0;
+    box-shadow: var(--active-shadow);
+    z-index: 1050;
+  }
+
+  #sidebar .nav-link {
+    font-size: 0.8rem;
+    gap: 0.6rem;
+    padding: 0.45rem 0.5rem 0.45rem 0.7rem;
+  }
+
+  #sidebar .nav-link .bi {
+    font-size: 0.92rem;
+    min-width: 18px;
+  }
+
+  #sidebar h6 {
+    font-size: 0.68rem;
+  }
+}
+
+/* RESPONSIVE: DESKTOP */
+@media (min-width: 769px) {
+  #sidebar {
+    left: 0 !important;
+  }
+}
+
+/* HIDE ON PRINT */
+@media print {
+  #sidebar {
+    display: none;
+  }
+}

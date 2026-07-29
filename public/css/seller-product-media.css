@@ -1,0 +1,238 @@
+.product-media-page .page-title {
+    color: var(--teal-primary, #0d9488);
+    font-weight: 600;
+}
+
+.product-media-page .page-subtitle {
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.product-media-page .themed-outline-btn,
+.product-media-page .btn-outline-primary,
+.product-media-page .btn-outline-secondary,
+.product-media-page .btn-outline-info {
+    --bs-btn-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-focus-shadow-rgb: 13, 148, 136 !important;
+    --bs-btn-active-color: #fff !important;
+    --bs-btn-active-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-active-border-color: var(--teal-primary, #0d9488) !important;
+}
+
+.product-media-page .btn-primary {
+    --bs-btn-bg: var(--teal-primary, #0d9488) !important;
+    --bs-btn-border-color: var(--teal-primary, #0d9488) !important;
+    --bs-btn-hover-bg: var(--teal-secondary, #0f766e) !important;
+    --bs-btn-hover-border-color: var(--teal-secondary, #0f766e) !important;
+    --bs-btn-focus-shadow-rgb: 13, 148, 136 !important;
+    --bs-btn-active-bg: var(--teal-secondary, #0f766e) !important;
+    --bs-btn-active-border-color: var(--teal-secondary, #0f766e) !important;
+}
+
+.media-upload-zone {
+    border: 2px dashed color-mix(in srgb, var(--teal-primary, #0d9488) 35%, #cbd5e1);
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    background: color-mix(in srgb, var(--teal-bg, #f8fafc) 88%, #fff);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.media-upload-zone:hover {
+    border-color: var(--teal-primary, #0d9488);
+    background: color-mix(in srgb, var(--teal-secondary, #0f766e) 12%, #fff);
+}
+
+.media-upload-zone.dragover {
+    border-color: var(--teal-primary, #0d9488);
+    background: color-mix(in srgb, var(--teal-secondary, #0f766e) 14%, #fff);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--teal-primary, #0d9488) 22%, transparent);
+}
+
+.media-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.media-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.media-preview {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    background: #fff;
+    cursor: pointer;
+}
+
+.media-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.media-item:hover .media-overlay {
+    opacity: 1;
+}
+
+.btn-overlay {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.primary-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, var(--teal-primary, #0d9488), var(--teal-secondary, #0f766e));
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.media-info {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.media-type-badge {
+    background: var(--teal-secondary, #0f766e);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+.product-media-page .card-header h5 i,
+.product-media-page .card-header h5 {
+    color: var(--teal-primary, #0d9488);
+}
+
+.product-media-page #uploadProgressBar {
+    background: linear-gradient(90deg, var(--teal-primary, #0d9488), var(--teal-secondary, #0f766e));
+}
+
+.product-media-page .product-media-empty-state {
+    max-width: 420px;
+    border: 1px dashed color-mix(in srgb, var(--teal-primary, #0d9488) 35%, #cbd5e1);
+    background: color-mix(in srgb, var(--teal-bg, #f0fdfa) 75%, #fff);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.product-media-page .product-media-empty-icon-wrap {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 0.5rem;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--teal-primary, #0d9488) 15%, #fff);
+}
+
+.product-media-page .product-media-empty-icon {
+    font-size: 1.5rem;
+    color: var(--teal-primary, #0d9488);
+}
+
+.product-media-page .product-media-empty-title {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.product-media-page .product-media-empty-text {
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.media-confirm-popup {
+    border-radius: 18px;
+    width: 430px;
+    max-width: calc(100vw - 2rem);
+    padding: 0.85rem 0.75rem 1rem;
+}
+
+.media-confirm-icon.swal2-icon.swal2-question {
+    border-color: color-mix(in srgb, var(--teal-primary, #0d9488) 60%, #99f6e4);
+    color: var(--teal-primary, #0d9488);
+}
+
+.media-confirm-icon.swal2-icon.swal2-question .swal2-icon-content {
+    color: var(--teal-primary, #0d9488);
+}
+
+.media-confirm-title {
+    color: #0f172a;
+    font-size: 1.55rem;
+    font-weight: 600;
+}
+
+.media-confirm-text {
+    color: #64748b;
+    font-size: 0.96rem;
+}
+
+.media-confirm-actions {
+    gap: 0.75rem;
+}
+
+.media-confirm-button,
+.media-cancel-button {
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 0.65rem 1.25rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.media-confirm-button {
+    background: var(--teal-primary, #0d9488);
+    border-color: var(--teal-primary, #0d9488);
+    color: #fff;
+}
+
+.media-confirm-button:hover {
+    background: var(--teal-secondary, #0f766e);
+    border-color: var(--teal-secondary, #0f766e);
+    color: #fff;
+}
+
+.media-cancel-button {
+    background: transparent;
+    border-color: #94a3b8;
+    color: #475569;
+}
+
+.media-cancel-button:hover {
+    background: #64748b;
+    border-color: #64748b;
+    color: #fff;
+}

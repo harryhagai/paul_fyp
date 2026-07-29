@@ -1,0 +1,279 @@
+#main-header {
+    height: 60px;
+    background-color: #ffffff;
+    font-family: var(--bs-body-font-family) !important;
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    z-index: 1040;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    transition: left 0.3s ease;
+}
+
+body.seller-body.sidebar-collapsed #main-header {
+    left: 72px;
+}
+
+.header-page-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    max-width: min(100%, 360px);
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
+}
+
+#main-header,
+#main-header button,
+#main-header a,
+#main-header span,
+#main-header div,
+#main-header .dropdown-item,
+#main-header .btn,
+#main-header .header-page-label,
+#main-header .seller-profile-name,
+#main-header .seller-profile-menu-name,
+#main-header .seller-profile-menu-email,
+#main-header .seller-profile-menu-role,
+#main-header .seller-profile-menu-item,
+#main-header .seller-header-notification-item-title,
+#main-header .seller-header-notification-item-message,
+#main-header .seller-header-notification-item-time,
+#main-header .notification-menu-header,
+#main-header .notification-menu-header .text-muted {
+    font-family: var(--bs-body-font-family) !important;
+    font-weight: 400 !important;
+}
+
+.header-page-label {
+    display: block;
+    min-width: 0;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: #374151;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-page-dot {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+    border-radius: 50%;
+    background: var(--teal-primary, #0d9488);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal-primary, #0d9488) 18%, white);
+}
+
+.header-action-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    line-height: 1;
+    position: relative;
+    display: grid;
+    place-items: center;
+    border-color: #e5e7eb;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.header-action-btn:hover {
+    transform: translateY(-1px);
+    border-color: #d1d5db;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
+}
+
+.header-notification-icon {
+    color: #374151;
+    line-height: 1;
+}
+
+.notification-badge {
+    top: -4px;
+    font-size: 0.65rem;
+}
+
+.seller-notification-menu {
+    width: 340px;
+    max-width: 92vw;
+    border-radius: 1rem;
+    border: 1px solid #e5edf9;
+    overflow: hidden;
+}
+
+.seller-header-notification-list {
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.seller-header-notification-item {
+    display: block;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #eef3fb;
+    text-decoration: none;
+    color: inherit;
+}
+
+.seller-header-notification-item:hover,
+.seller-header-notification-item:focus {
+    background: #f7faff;
+    color: inherit;
+    text-decoration: none;
+}
+
+.seller-header-notification-item.unread {
+    background: #f4f8ff;
+}
+
+.seller-header-notification-item-title {
+    font-size: 0.86rem;
+    font-weight: 400;
+    color: #1f3f73;
+    margin-bottom: 2px;
+}
+
+.seller-header-notification-item-message {
+    font-size: 0.78rem;
+    color: #607492;
+    line-height: 1.45;
+    margin-top: 0.24rem;
+}
+
+.seller-header-notification-item-time {
+    font-size: 0.72rem;
+    color: #8a9ab1;
+    margin-top: 0.32rem;
+}
+
+.seller-header-notification-empty {
+    color: #7a8aa1;
+    font-size: 0.84rem;
+    padding: 1.4rem 1rem;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid color-mix(in srgb, var(--teal-secondary, #0f766e) 25%, white);
+}
+
+.seller-profile-name {
+    color: #374151;
+    font-weight: 400;
+}
+
+#sellerProfileDropdown {
+    color: #495057;
+    font-weight: 400;
+}
+
+.seller-profile-menu {
+    min-width: 240px;
+    border: 1px solid #e5edf9;
+    border-radius: 1rem;
+    padding: 0.45rem;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+}
+
+.seller-profile-menu-header {
+    padding: 8px;
+}
+
+.seller-profile-menu-name {
+    color: #374151;
+    font-size: 0.92rem;
+    font-weight: 400;
+    line-height: 1.2;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.seller-profile-menu-email {
+    color: #64748b;
+    font-size: 0.78rem;
+    line-height: 1.25;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.seller-profile-menu-role {
+    color: #6b7280;
+    font-size: 0.72rem;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.seller-profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-weight: 400;
+    color: #495057;
+}
+
+.seller-profile-menu-item:hover,
+.seller-profile-menu-item:focus {
+    background: #f4f8ff;
+    color: #123f86;
+}
+
+.seller-profile-menu-icon {
+    width: 18px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.seller-profile-menu-icon.profile {
+    color: var(--teal-primary, #0d9488);
+}
+
+.seller-profile-menu-icon.logout {
+    color: #dc2626;
+}
+
+#main-header .text-primary,
+#main-header a {
+    color: inherit;
+}
+
+#main-header .seller-profile-menu-icon.logout {
+    color: #dc2626;
+}
+
+@media (max-width: 768px) {
+    #main-header {
+        left: 0;
+    }
+
+    body.seller-body.sidebar-collapsed #main-header {
+        left: 0;
+    }
+
+    .header-page-pill {
+        display: none;
+    }
+
+    .header-page-label {
+        font-size: 0.98rem;
+    }
+}
