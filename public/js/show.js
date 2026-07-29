@@ -109,10 +109,6 @@ function getCurrentUserRole() {
     return (window.currentUserRole || "").toLowerCase();
 }
 
-function isCurrentUserEmailVerified() {
-    return window.currentUserEmailVerified === true;
-}
-
 function buildAuthRedirectUrl(basePath, params = {}) {
     const url = new URL(basePath, window.location.origin);
     Object.entries(params).forEach(([key, value]) => {
@@ -534,16 +530,6 @@ window.addToCart = async function (productId, quantity) {
 
             window.location.href =
                 window.currentUserDashboardUrl || "/login";
-            return;
-        }
-
-        if (!isCurrentUserEmailVerified()) {
-            window.location.href = buildAuthRedirectUrl("/email/verify", {
-                redirect: window.location.pathname + window.location.search,
-                action: "add_to_cart",
-                product_id: productId,
-                quantity: quantity,
-            });
             return;
         }
 

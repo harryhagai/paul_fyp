@@ -34,15 +34,6 @@ window.openRatingModal = async function () {
         return;
     }
 
-    if (!isCurrentUserEmailVerified()) {
-        window.location.href = buildAuthRedirectUrl("/email/verify", {
-            redirect: window.location.pathname + window.location.search,
-            action: "rate_product",
-            product_id: window.productId,
-        });
-        return;
-    }
-
     const ratingModalEl = document.getElementById("ratingModal");
     if (!ratingModalEl || typeof bootstrap === "undefined") return;
 

@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Support\PendingShopAction;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -106,13 +104,6 @@ class AuthController extends Controller
             };
 
             if ($user->role === 'customer') {
-                if ($pendingShopAction->has($request) && !$user->hasVerifiedEmail()) {
-                    return redirect()->route('verification.notice')->with(
-                        'status',
-                        'Please verify your email address to complete your requested shop action.'
-                    );
-                }
-
                 $pendingResult = $pendingShopAction->process($request);
                 if ($pendingResult) {
                     $redirectResponse = redirect()->to($pendingResult['redirect_url']);
@@ -163,7 +154,7 @@ class AuthController extends Controller
     /**
      * Handle registration request
      */
-    public function register(Request $request)
+    public function register(Request $request, PendingShopAction $pendingShopAction)
     {
         $normalizedPhone = preg_replace('/\D+/', '', (string) $request->input('phone_number'));
         $request->merge(['phone_number' => $normalizedPhone]);
@@ -183,41 +174,21 @@ class AuthController extends Controller
             'role'         => 'customer', // default role
         ]);
 
-        event(new Registered($user));
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('verification.notice')
-            ->with('status', 'We sent a verification link to your email. Please verify your email address.');
-    }
-
-    public function showVerificationNotice(Request $request, PendingShopAction $pendingShopAction)
-    {
-        $pendingShopAction->capture($request);
-
-        return view('auth.verify-email');
-    }
-
-    public function verifyEmail(
-        EmailVerificationRequest $request,
-        PendingShopAction $pendingShopAction
-    ) {
-        $request->fulfill();
-
-        if ($request->user()->role === 'customer') {
-            $pendingResult = $pendingShopAction->process($request);
-            if ($pendingResult) {
-                $response = redirect()->to($pendingResult['redirect_url']);
-                if ($pendingResult['flash_type'] && $pendingResult['message']) {
-                    $response->with($pendingResult['flash_type'], $pendingResult['message']);
-                }
-
-                return $response;
+        $pendingResult = $pendingShopAction->process($request);
+        if ($pendingResult) {
+            $response = redirect()->to($pendingResult['redirect_url']);
+            if ($pendingResult['flash_type'] && $pendingResult['message']) {
+                $response->with($pendingResult['flash_type'], $pendingResult['message']);
             }
+
+            return $response;
         }
 
         return redirect()->route('customer.dashboard')
-            ->with('success', 'Email verified successfully.');
+            ->with('success', 'Registration successful. Welcome!');
     }
 
     /**

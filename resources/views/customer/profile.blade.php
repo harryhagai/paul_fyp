@@ -59,16 +59,6 @@
                             <label class="form-label">Member Since</label>
                             <input type="text" class="form-control readonly-field" value="{{ $user->created_at->format('M d, Y') }}" readonly>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Email Status</label>
-                            <div>
-                                @if($user->email_verified_at)
-                                    <span class="badge text-bg-success"><i class="bi bi-check-circle me-1"></i>Verified</span>
-                                @else
-                                    <span class="badge text-bg-warning"><i class="bi bi-exclamation-triangle me-1"></i>Not Verified</span>
-                                @endif
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

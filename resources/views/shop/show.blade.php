@@ -474,7 +474,6 @@
         window.productSlug = @json($product->slug);
         window.productViewActivityUrl = @json(route('shop.view.activity', ['public_id' => $product->public_id, 'slug' => $product->slug]));
         window.currentUserRole = @json($currentUserRole);
-        window.currentUserEmailVerified = @json(auth()->check() && auth()->user()->hasVerifiedEmail());
         window.currentUserDashboardUrl = @json($currentUserDashboardUrl);
     </script>
 

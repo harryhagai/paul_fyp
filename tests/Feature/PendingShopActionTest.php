@@ -8,14 +8,13 @@ use App\Models\Product;
 use App\Models\User;
 use App\Support\PendingShopAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class PendingShopActionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_registration_then_verification_adds_pending_product_to_cart_and_returns_to_product(): void
+    public function test_registration_adds_pending_product_to_cart_and_returns_to_product(): void
     {
         $product = $this->createProduct();
         $returnUrl = route('shop.show', [$product->public_id, $product->slug], false);
@@ -32,45 +31,42 @@ class PendingShopActionTest extends TestCase
             'email' => 'pending.customer@gmail.com',
             'phone_number' => '255712345678',
             'password' => 'secret123',
-        ])->assertRedirect(route('verification.notice'));
-
-        $user = User::where('email', 'pending.customer@gmail.com')->firstOrFail();
-
-        $this->get($this->verificationUrl($user))
+        ])
             ->assertRedirect($returnUrl)
             ->assertSessionHas('success', 'Product added to cart successfully')
             ->assertSessionMissing(PendingShopAction::SESSION_KEY);
 
-        $this->assertNotNull($user->fresh()->email_verified_at);
         $this->assertDatabaseHas('cart_items', [
             'product_id' => $product->id,
             'quantity' => 2,
         ]);
     }
 
-    public function test_verification_returns_to_product_and_opens_rating_modal(): void
+    public function test_registration_returns_to_product_and_opens_rating_modal(): void
     {
         $product = $this->createProduct();
-        $user = $this->createUnverifiedCustomer();
         $returnUrl = route('shop.show', [$product->public_id, $product->slug], false);
 
-        $this->actingAs($user)
-            ->withSession([
-                PendingShopAction::SESSION_KEY => [
-                    'action' => 'rate_product',
-                    'product_id' => $product->id,
-                    'return_url' => $returnUrl,
-                ],
-            ])
-            ->get($this->verificationUrl($user))
+        $this->get(route('register', [
+            'action' => 'rate_product',
+            'product_id' => $product->id,
+            'redirect' => $returnUrl,
+        ]))->assertOk();
+
+        $this->post(route('register'), [
+            'name' => 'Rating Customer',
+            'email' => 'rating.customer@gmail.com',
+            'phone_number' => '255712345679',
+            'password' => 'secret123',
+        ])
             ->assertRedirect($returnUrl.'?open_rating=1')
             ->assertSessionMissing(PendingShopAction::SESSION_KEY);
     }
 
-    public function test_verified_login_processes_pending_cart_action(): void
+    public function test_login_processes_pending_cart_action_without_email_verification(): void
     {
         $product = $this->createProduct();
-        $user = User::factory()->create([
+        $user = User::factory()->unverified()->create([
             'role' => 'customer',
             'phone_number' => '255713000001',
         ]);
@@ -91,7 +87,7 @@ class PendingShopActionTest extends TestCase
         $this->assertSame(1, CartItem::where('product_id', $product->id)->count());
     }
 
-    public function test_unverified_customer_is_redirected_before_shop_mutations(): void
+    public function test_unverified_customer_can_perform_shop_mutations(): void
     {
         $product = $this->createProduct();
         $user = $this->createUnverifiedCustomer();
@@ -101,11 +97,22 @@ class PendingShopActionTest extends TestCase
                 'product_id' => $product->id,
                 'quantity' => 1,
             ])
-            ->assertRedirect(route('verification.notice'));
+            ->assertOk()
+            ->assertJson(['success' => true]);
 
         $this->actingAs($user)
             ->post(route('shop.rate', [$product->public_id, $product->slug]), ['rating' => 5])
-            ->assertRedirect(route('verification.notice'));
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('cart_items', [
+            'product_id' => $product->id,
+            'quantity' => 1,
+        ]);
+        $this->assertDatabaseHas('ratings', [
+            'product_id' => $product->id,
+            'user_id' => $user->id,
+            'rating' => 5,
+        ]);
     }
 
     public function test_unsafe_return_url_is_replaced_with_local_shop_path(): void
@@ -130,8 +137,7 @@ class PendingShopActionTest extends TestCase
         $user = $this->createUnverifiedCustomer();
         $returnUrl = route('shop.show', [$product->public_id, $product->slug], false);
 
-        $this->actingAs($user)
-            ->withSession([
+        $this->withSession([
                 PendingShopAction::SESSION_KEY => [
                     'action' => 'add_to_cart',
                     'product_id' => $product->id,
@@ -139,32 +145,15 @@ class PendingShopActionTest extends TestCase
                     'return_url' => $returnUrl,
                 ],
             ])
-            ->get($this->verificationUrl($user))
+            ->post(route('login'), [
+                'email' => $user->email,
+                'password' => 'password',
+            ])
             ->assertRedirect($returnUrl)
             ->assertSessionHas('error', 'Selected product is currently unavailable.')
             ->assertSessionMissing(PendingShopAction::SESSION_KEY);
 
         $this->assertDatabaseCount('cart_items', 0);
-    }
-
-    public function test_verification_without_pending_action_goes_to_customer_dashboard(): void
-    {
-        $user = $this->createUnverifiedCustomer();
-
-        $this->actingAs($user)
-            ->get($this->verificationUrl($user))
-            ->assertRedirect(route('customer.dashboard'))
-            ->assertSessionHas('success', 'Email verified successfully.');
-    }
-
-    public function test_verification_notice_displays_the_destination_email_address(): void
-    {
-        $user = $this->createUnverifiedCustomer();
-
-        $this->actingAs($user)
-            ->get(route('verification.notice'))
-            ->assertOk()
-            ->assertSee($user->email);
     }
 
     private function createProduct(array $overrides = []): Product
@@ -192,15 +181,4 @@ class PendingShopActionTest extends TestCase
         ]);
     }
 
-    private function verificationUrl(User $user): string
-    {
-        return URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            [
-                'id' => $user->getKey(),
-                'hash' => sha1($user->getEmailForVerification()),
-            ]
-        );
-    }
 }

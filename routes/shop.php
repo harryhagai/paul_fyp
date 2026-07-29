@@ -18,7 +18,7 @@ use App\Http\Controllers\Shop\OrderController;
 // Cart routes - Protected with auth and role middleware
 Route::prefix('cart')->middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/add', [CartController::class, 'add'])->middleware('verified')->name('cart.add');
+    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
     Route::patch('/update/{cartItem}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/remove/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
     Route::delete('/clear', [CartController::class, 'clear'])->name('cart.clear');

@@ -7,7 +7,6 @@ use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\ClickPesaController;
 use App\Models\Notification;
-use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return redirect()->route('shop');
@@ -24,7 +23,7 @@ Route::get('/categories', [\App\Http\Controllers\ShopController::class, 'categor
 Route::get('/shop', [\App\Http\Controllers\ShopController::class, 'index'])->name('shop');
 Route::get('/shop/{public_id}/{slug}', [\App\Http\Controllers\ShopController::class, 'show'])->name('shop.show');
 Route::post('/shop/{public_id}/{slug}/view-activity', [\App\Http\Controllers\ShopController::class, 'trackViewActivity'])->name('shop.view.activity');
-Route::post('/shop/{public_id}/{slug}/rate', [\App\Http\Controllers\ShopController::class, 'storeRating'])->middleware(['auth', 'verified', 'role:customer'])->name('shop.rate');
+Route::post('/shop/{public_id}/{slug}/rate', [\App\Http\Controllers\ShopController::class, 'storeRating'])->middleware(['auth', 'role:customer'])->name('shop.rate');
 Route::get('/category/{slug}', [\App\Http\Controllers\ShopController::class, 'category'])->name('category.show');
 
 // Authentication Routes
@@ -37,20 +36,6 @@ Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
 Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
-Route::get('/email/verify', [AuthController::class, 'showVerificationNotice'])
-    ->middleware('auth')
-    ->name('verification.notice');
-
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-    ->middleware(['auth', 'signed'])
-    ->name('verification.verify');
-
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-
-    return back()->with('status', 'Verification link sent.');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-
 Route::post('/clickpesa/webhook', [ClickPesaController::class, 'webhook'])->name('clickpesa.webhook');
 Route::match(['get', 'post'], '/clickpesa/callback', [ClickPesaController::class, 'callback'])->name('clickpesa.callback');
 
