@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Rating;
+use App\Models\ProductView;
 
 class ShopController extends Controller
 {
@@ -80,7 +81,7 @@ class ShopController extends Controller
         }
 
         // Increment view count
-        $product->increment('views');
+        $product->increment('views', 1, []);
 
         // Get related products from same category
         $relatedProducts = Product::with(['category', 'media', 'description'])
@@ -109,7 +110,8 @@ class ShopController extends Controller
             return response()->json(['success' => true, 'skipped' => true]);
         }
 
-        $existing = ProductView::where('product_id', $product->id)
+        $existing = ProductView::query()
+            ->where('product_id', $product->id)
             ->where('session_id', $sessionId)
             ->whereDate('created_at', now()->toDateString())
             ->latest()
@@ -159,9 +161,9 @@ class ShopController extends Controller
         return view('categories', compact('categories'));
     }
 
-    public function category(Request $request, $slug)
+    public function category(Request $request, string $slug)
     {
-        $category = Category::where('slug', $slug)->firstOrFail();
+        $category = Category::query()->where('slug', $slug)->firstOrFail();
 
         $query = Product::with(['category', 'media', 'description'])
                        ->where('category_id', $category->id)
@@ -229,7 +231,8 @@ class ShopController extends Controller
         $product = $this->resolveShopProduct($publicId);
 
         // Check if user already rated this product
-        $existingRating = Rating::where('user_id', Auth::id())
+        $existingRating = Rating::query()
+                                ->where('user_id', Auth::id())
                                 ->where('product_id', $product->id)
                                 ->first();
 
