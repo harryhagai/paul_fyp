@@ -8,6 +8,7 @@ use App\Models\CheckoutInformation;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Services\ClickPesaService;
+use App\Services\RobotArmCommandService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -61,7 +62,7 @@ class CheckoutController extends Controller
     /**
      * Process the checkout
      */
-    public function store(Request $request, ClickPesaService $clickPesaService)
+    public function store(Request $request, ClickPesaService $clickPesaService, RobotArmCommandService $robot)
     {
         // Normalize phone number:
         // accepts 0XXXXXXXXX, XXXXXXXXX, 255XXXXXXXXX, or +255XXXXXXXXX
@@ -205,6 +206,23 @@ class CheckoutController extends Controller
                     'clickpesa_payload' => $payment,
                     'payment_message' => $payment['message'] ?? 'Payment prompt sent to customer phone.',
                 ]);
+
+                if ($this->paymentIsPaid((string) $order->payment_status)) {
+                    $order->update([
+                        'status' => 'confirmed',
+                        'paid_at' => $order->paid_at ?: now(),
+                    ]);
+
+                    try {
+                        $robot->dispatchPickForOrderIfNeeded($order->fresh(['orderItems.product']));
+                    } catch (\Throwable $robotException) {
+                        Log::error('Automatic robot PICK dispatch failed during checkout', [
+                            'order_id' => $order->id,
+                            'order_number' => $order->order_number,
+                            'message' => $robotException->getMessage(),
+                        ]);
+                    }
+                }
             } catch (\Throwable $e) {
                 $amountLimitFailure = $this->isClickPesaAmountLimitFailure($e);
 
@@ -364,6 +382,11 @@ class CheckoutController extends Controller
     private function isClickPesaAmountLimitFailure(\Throwable $e): bool
     {
         return str_contains(strtolower($e->getMessage()), 'amount must be between');
+    }
+
+    private function paymentIsPaid(string $status): bool
+    {
+        return in_array(strtolower($status), ['paid', 'success', 'successful', 'completed', 'complete', 'settled', 'approved'], true);
     }
 
     private function deleteOrderAndRestoreStock(Order $order): void

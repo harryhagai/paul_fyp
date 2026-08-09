@@ -21,6 +21,7 @@ class Product extends Model
         'discount',
         'rate',
         'stock',
+        'robot_location',
         'thumbnail',
         'is_advertised'
     ];
@@ -29,6 +30,7 @@ class Product extends Model
         'is_advertised' => 'boolean',
         'old_price' => 'decimal:2',
         'new_price' => 'decimal:2',
+        'robot_location' => 'integer',
     ];
 
     public function user()

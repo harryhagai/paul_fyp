@@ -1,2 +1,13 @@
 *
 !.gitignore
+!*/
+!*.jpg
+!*.jpeg
+!*.png
+!*.gif
+!*.webp
+!*.avif
+!*.svg
+!*.mp4
+!*.mov
+!*.webm

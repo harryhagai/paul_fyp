@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -35,6 +36,7 @@ class ProductController extends Controller
                 'discount',
                 'rate',
                 'stock',
+                'robot_location',
                 'is_advertised',
                 'created_at',
             ])
@@ -89,11 +91,11 @@ class ProductController extends Controller
             'old_price' => 'nullable|numeric|min:0',
             'new_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'robot_location' => ['nullable', 'integer', Rule::in(config('robot.locations', range(1, 5)))],
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_advertised' => 'boolean',
             'description' => 'nullable|string',
             'specifications' => 'nullable|string',
-            'details' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -126,6 +128,7 @@ class ProductController extends Controller
                 'discount' => $request->old_price ? round((($request->old_price - $request->new_price) / $request->old_price) * 100) : 0,
                 'rate' => 0,
                 'stock' => $request->stock,
+                'robot_location' => $request->filled('robot_location') ? (int) $request->robot_location : null,
                 'is_advertised' => $request->is_advertised ?? false,
             ]);
 
@@ -140,7 +143,6 @@ class ProductController extends Controller
                 'product_id' => $product->id,
                 'description' => $request->description,
                 'specifications' => $request->specifications,
-                'details' => $request->details,
             ]);
 
             DB::commit();
@@ -224,11 +226,11 @@ class ProductController extends Controller
             'old_price' => 'nullable|numeric|min:0',
             'new_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'robot_location' => ['nullable', 'integer', Rule::in(config('robot.locations', range(1, 5)))],
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_advertised' => 'boolean',
             'description' => 'nullable|string',
             'specifications' => 'nullable|string',
-            'details' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -260,6 +262,7 @@ class ProductController extends Controller
                 'new_price' => $request->new_price,
                 'discount' => $request->old_price ? round((($request->old_price - $request->new_price) / $request->old_price) * 100) : 0,
                 'stock' => $request->stock,
+                'robot_location' => $request->filled('robot_location') ? (int) $request->robot_location : null,
                 'is_advertised' => $request->is_advertised ?? false,
                 'rate' => $request->rate ?? $product->rate ?? 0,
             ]);
@@ -281,7 +284,6 @@ class ProductController extends Controller
                 [
                     'description' => $request->description,
                     'specifications' => $request->specifications,
-                    'details' => $request->details,
                 ]
             );
 
@@ -593,6 +595,63 @@ class ProductController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Delete failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Delete every gallery media item belonging to one product
+    public function deleteAllMedia($productId)
+    {
+        $product = Product::wherePublicIdOrId($productId)->first();
+        if (!$product) {
+            return response()->json(['success' => false, 'message' => 'Product not found'], 404);
+        }
+
+        $mediaItems = ProductMedia::where('product_id', $product->id)->get();
+        if ($mediaItems->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'No media found for this product.',
+                'deleted_count' => 0,
+            ]);
+        }
+
+        $paths = $mediaItems
+            ->pluck('file_path')
+            ->filter()
+            ->unique()
+            ->values();
+
+        try {
+            DB::transaction(function () use ($product): void {
+                ProductMedia::where('product_id', $product->id)->delete();
+            });
+
+            $failedPaths = $paths->filter(function (string $path): bool {
+                $disk = Storage::disk('public');
+
+                return $disk->exists($path) && !$disk->delete($path);
+            })->values();
+
+            if ($failedPaths->isNotEmpty()) {
+                \Illuminate\Support\Facades\Log::warning('Some product media files could not be deleted', [
+                    'product_id' => $product->id,
+                    'paths' => $failedPaths->all(),
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $failedPaths->isEmpty()
+                    ? 'All product media deleted successfully.'
+                    : 'Media records were deleted, but some files need manual cleanup.',
+                'deleted_count' => $mediaItems->count(),
+                'file_cleanup_warning' => $failedPaths->isNotEmpty(),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Delete all failed: '.$e->getMessage(),
             ], 500);
         }
     }

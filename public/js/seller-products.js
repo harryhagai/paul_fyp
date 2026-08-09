@@ -132,9 +132,9 @@
             $('#editNewPrice').val(p.new_price);
             $('#editOldPrice').val(p.old_price || '');
             $('#editStock').val(p.stock);
+            $('#editRobotLocation').val(p.robot_location || '');
             $('#editDescription').val(p.description?.description || '');
             $('#editSpecifications').val(p.description?.specifications || '');
-            $('#editDetails').val(p.description?.details || '');
         }).always(hideLoading);
     });
 
@@ -196,9 +196,9 @@
             $('#viewStock').text(`Stock: ${p.stock}`);
             $('#viewDescription').text(p.description?.description || 'No description available');
             $('#viewSpecifications').text(p.description?.specifications || 'No specifications available');
-            $('#viewDetails').text(p.description?.details || 'No details available');
             $('#viewStatus').text(p.is_advertised ? 'Advertised' : 'Normal');
             $('#viewDiscount').text(p.discount > 0 ? `${p.discount}% OFF` : 'No Discount');
+            $('#viewRobotLocation').text(p.robot_location ? `LOCATION ${p.robot_location}` : 'No Robot Location');
         });
     });
 

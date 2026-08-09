@@ -225,6 +225,29 @@
     color: #fff;
 }
 
+.media-delete-all-icon.swal2-icon.swal2-warning {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.media-delete-all-icon.swal2-icon.swal2-warning .swal2-icon-content {
+    color: #dc3545;
+}
+
+.media-delete-all-button {
+    padding: 0.65rem 1.2rem;
+    color: #fff;
+    background: #dc3545;
+    border: 1px solid #dc3545;
+    border-radius: 10px;
+}
+
+.media-delete-all-button:hover {
+    color: #fff;
+    background: #b02a37;
+    border-color: #b02a37;
+}
+
 .media-cancel-button {
     background: transparent;
     border-color: #94a3b8;

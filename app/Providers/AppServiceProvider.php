@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\SiteSetting;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,13 +27,17 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        if (!Schema::hasTable('site_settings')) {
+        try {
+            if (!Schema::hasTable('site_settings')) {
+                return;
+            }
+
+            $mailSettings = SiteSetting::query()
+                ->where('group', 'mail')
+                ->pluck('value', 'key');
+        } catch (Throwable) {
             return;
         }
-
-        $mailSettings = SiteSetting::query()
-            ->where('group', 'mail')
-            ->pluck('value', 'key');
 
         if ($mailSettings->isEmpty()) {
             return;

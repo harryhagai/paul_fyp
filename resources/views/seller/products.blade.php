@@ -95,12 +95,9 @@
                                         <th>S/No.</th>
                                         <th>Image</th>
                                         <th>Name</th>
-                                        <th>Category</th>
                                         <th>Price</th>
                                         <th>Stock</th>
-                                        <th>Discount</th>
-                                        <th>Rating</th>
-                                        <th>Advertise</th>
+                                        <th>Robot Location</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -141,17 +138,23 @@
                 </div>
                 <form id="addProductForm" enctype="multipart/form-data">
                     <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-lg-5">
+                        <div class="row g-3 product-form-grid">
+                            <div class="col-lg-6 product-form-column">
                                 <!-- Left Column -->
                                 <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="product-form-section-title">
+                                            <i class="bi bi-box-seam"></i>
+                                            <span>Product &amp; Inventory</span>
+                                        </div>
+                                    </div>
                                     <div class="col-12">
                                         <label for="addName" class="form-label">Product Name <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="addName" name="name"
                                             required>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-md-7">
                                         <label for="addCategory" class="form-label">Category <span
                                                 class="text-danger">*</span></label>
                                         <select class="form-select" id="addCategory" name="category_id" required>
@@ -161,13 +164,31 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-md-5">
                                         <label for="addStock" class="form-label">Stock <span
                                                 class="text-danger">*</span></label>
                                         <input type="number" class="form-control" id="addStock" name="stock"
                                             required>
                                     </div>
                                     <div class="col-12">
+                                        <div class="robot-location-field">
+                                            <div class="robot-location-heading">
+                                                <label for="addRobotLocation" class="form-label mb-0">
+                                                    <i class="bi bi-robot"></i>Robot Storage Location
+                                                </label>
+                                                <span class="robot-location-range">Allowed: 1–{{ max(config('robot.locations', range(1, 5))) }}</span>
+                                            </div>
+                                            <div class="input-group robot-location-input">
+                                                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                                <input type="number" class="form-control" id="addRobotLocation"
+                                                    name="robot_location" min="1"
+                                                    max="{{ max(config('robot.locations', range(1, 5))) }}" step="1"
+                                                    placeholder="Example: 3">
+                                            </div>
+                                            <small class="robot-location-help">Leave empty only when this product will not be handled by the robot.</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
                                         <label for="addNewPrice" class="form-label">New Price <span
                                                 class="text-danger">*</span></label>
                                         <div class="input-group">
@@ -176,7 +197,7 @@
                                                 name="new_price" required>
                                         </div>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-md-6">
                                         <label for="addOldPrice" class="form-label">Old Price (Optional)</label>
                                         <div class="input-group">
                                             <span class="input-group-text">Tsh</span>
@@ -191,20 +212,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-7">
+                            <div class="col-lg-6 product-form-column">
                                 <!-- Right Column -->
                                 <div class="row g-3">
                                     <div class="col-12">
+                                        <div class="product-form-section-title">
+                                            <i class="bi bi-card-text"></i>
+                                            <span>Product Information</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
                                         <label for="addDescription" class="form-label">Description</label>
-                                        <textarea class="form-control" id="addDescription" name="description" rows="3"></textarea>
+                                        <textarea class="form-control" id="addDescription" name="description" rows="4"></textarea>
                                     </div>
                                     <div class="col-12">
                                         <label for="addSpecifications" class="form-label">Specifications</label>
-                                        <textarea class="form-control" id="addSpecifications" name="specifications" rows="3"></textarea>
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="addDetails" class="form-label">Details</label>
-                                        <textarea class="form-control" id="addDetails" name="details" rows="3"></textarea>
+                                        <textarea class="form-control" id="addSpecifications" name="specifications" rows="4"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -241,17 +264,23 @@
                 <form id="editProductForm" enctype="multipart/form-data">
                     <input type="hidden" id="editProductId" name="product_id">
                     <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-lg-5">
+                        <div class="row g-3 product-form-grid">
+                            <div class="col-lg-6 product-form-column">
                                 <!-- Left Column -->
                                 <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="product-form-section-title">
+                                            <i class="bi bi-box-seam"></i>
+                                            <span>Product &amp; Inventory</span>
+                                        </div>
+                                    </div>
                                     <div class="col-12">
                                         <label for="editName" class="form-label">Product Name <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="editName" name="name"
                                             required>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-md-7">
                                         <label for="editCategory" class="form-label">Category <span
                                                 class="text-danger">*</span></label>
                                         <select class="form-select" id="editCategory" name="category_id" required>
@@ -261,13 +290,31 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-md-5">
                                         <label for="editStock" class="form-label">Stock <span
                                                 class="text-danger">*</span></label>
                                         <input type="number" class="form-control" id="editStock" name="stock"
                                             required>
                                     </div>
                                     <div class="col-12">
+                                        <div class="robot-location-field">
+                                            <div class="robot-location-heading">
+                                                <label for="editRobotLocation" class="form-label mb-0">
+                                                    <i class="bi bi-robot"></i>Robot Storage Location
+                                                </label>
+                                                <span class="robot-location-range">Allowed: 1–{{ max(config('robot.locations', range(1, 5))) }}</span>
+                                            </div>
+                                            <div class="input-group robot-location-input">
+                                                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                                <input type="number" class="form-control" id="editRobotLocation"
+                                                    name="robot_location" min="1"
+                                                    max="{{ max(config('robot.locations', range(1, 5))) }}" step="1"
+                                                    placeholder="Example: 3">
+                                            </div>
+                                            <small class="robot-location-help">Leave empty only when this product will not be handled by the robot.</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
                                         <label for="editNewPrice" class="form-label">New Price <span
                                                 class="text-danger">*</span></label>
                                         <div class="input-group">
@@ -276,7 +323,7 @@
                                                 name="new_price" required>
                                         </div>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-md-6">
                                         <label for="editOldPrice" class="form-label">Old Price (Optional)</label>
                                         <div class="input-group">
                                             <span class="input-group-text">Tsh</span>
@@ -292,20 +339,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-7">
+                            <div class="col-lg-6 product-form-column">
                                 <!-- Right Column -->
                                 <div class="row g-3">
                                     <div class="col-12">
+                                        <div class="product-form-section-title">
+                                            <i class="bi bi-card-text"></i>
+                                            <span>Product Information</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
                                         <label for="editDescription" class="form-label">Description</label>
-                                        <textarea class="form-control" id="editDescription" name="description" rows="3"></textarea>
+                                        <textarea class="form-control" id="editDescription" name="description" rows="4"></textarea>
                                     </div>
                                     <div class="col-12">
                                         <label for="editSpecifications" class="form-label">Specifications</label>
-                                        <textarea class="form-control" id="editSpecifications" name="specifications" rows="3"></textarea>
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="editDetails" class="form-label">Details</label>
-                                        <textarea class="form-control" id="editDetails" name="details" rows="3"></textarea>
+                                        <textarea class="form-control" id="editSpecifications" name="specifications" rows="4"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -368,6 +417,7 @@
                                 <div class="d-flex gap-2">
                                     <span class="badge view-chip view-chip-primary" id="viewStatus"></span>
                                     <span class="badge view-chip view-chip-primary-soft" id="viewDiscount"></span>
+                                    <span class="badge view-chip view-chip-muted" id="viewRobotLocation"></span>
                                 </div>
                             </div>
                         </div>
@@ -380,10 +430,6 @@
                             <div class="mb-3">
                                 <label class="form-label">Specifications</label>
                                 <textarea id="viewSpecifications" class="form-control" rows="3" readonly></textarea>
-                            </div>
-                            <div>
-                                <label class="form-label">Details</label>
-                                <textarea id="viewDetails" class="form-control" rows="3" readonly></textarea>
                             </div>
                         </div>
                     </div>

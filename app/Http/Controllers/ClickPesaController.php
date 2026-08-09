@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Services\ClickPesaService;
+use App\Services\RobotArmCommandService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
+use Throwable;
 
 class ClickPesaController extends Controller
 {
-    public function webhook(Request $request, ClickPesaService $clickPesaService)
+    public function webhook(Request $request, ClickPesaService $clickPesaService, RobotArmCommandService $robot)
     {
         $payload = $request->all();
 
@@ -25,12 +27,12 @@ class ClickPesaController extends Controller
             return response()->json(['message' => 'Invalid checksum'], 401);
         }
 
-        $this->applyPaymentEvent($payload);
+        $this->applyPaymentEvent($payload, $robot);
 
         return response()->json(['received' => true]);
     }
 
-    public function callback(Request $request)
+    public function callback(Request $request, RobotArmCommandService $robot)
     {
         $payload = $request->all();
 
@@ -38,12 +40,12 @@ class ClickPesaController extends Controller
             'payload' => $payload,
         ]);
 
-        $this->applyPaymentEvent($payload);
+        $this->applyPaymentEvent($payload, $robot);
 
         return response()->json(['received' => true]);
     }
 
-    private function applyPaymentEvent(array $payload): void
+    private function applyPaymentEvent(array $payload, RobotArmCommandService $robot): void
     {
         $event = strtoupper(trim((string) ($payload['event'] ?? $payload['eventType'] ?? $payload['type'] ?? '')));
         $data = $payload['data'] ?? $payload['payment'] ?? $payload;
@@ -94,7 +96,10 @@ class ClickPesaController extends Controller
             return;
         }
 
-        DB::transaction(function () use ($order, $event, $data, $payload) {
+        $shouldDispatchRobot = DB::transaction(function () use ($order, $event, $data, $payload): bool {
+            $wasConfirmed = $order->status === 'confirmed'
+                && in_array(strtolower((string) $order->payment_status), ['paid', 'successful', 'success', 'completed'], true);
+
             $status = strtoupper(trim((string) ($data['status'] ?? $data['paymentStatus'] ?? $data['state'] ?? '')));
             $message = $data['message'] ?? $data['description'] ?? $data['statusDescription'] ?? $order->payment_message;
 
@@ -134,7 +139,23 @@ class ClickPesaController extends Controller
             }
 
             $order->save();
+
+            return !$wasConfirmed
+                && $order->status === 'confirmed'
+                && $order->payment_status === 'paid';
         });
+
+        if ($shouldDispatchRobot) {
+            try {
+                $robot->dispatchPickForOrderIfNeeded($order->fresh(['orderItems.product']));
+            } catch (Throwable $exception) {
+                Log::error('Automatic robot PICK dispatch failed after ClickPesa confirmation', [
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'message' => $exception->getMessage(),
+                ]);
+            }
+        }
     }
 
     private function firstValue(array $data, array $payload, array $keys): ?string

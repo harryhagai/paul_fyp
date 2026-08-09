@@ -16,7 +16,6 @@
             <small class="text-muted">{{ $product->slug }}</small>
         </div>
     </td>
-    <td>{{ $product->category->name ?? 'N/A' }}</td>
     <td>
         <div class="d-flex flex-column">
             <strong>{{ format_money_short($product->new_price, 2) }}</strong>
@@ -31,24 +30,15 @@
         {{ $product->stock }}
     </td>
     <td>
-        @if($product->discount > 0)
-            <span class="discount-badge">{{ $product->discount }}% OFF</span>
+        @if($product->robot_location)
+            <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">
+                <i class="bi bi-robot me-1"></i>LOCATION {{ $product->robot_location }}
+            </span>
         @else
-            <span class="badge bg-secondary">No Discount</span>
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                Not assigned
+            </span>
         @endif
-    </td>
-    <td>
-        <select class="form-select rating-select" data-product-id="{{ $product->public_id }}" style="width: 70px;">
-            @for($i = 1; $i <= 5; $i++)
-                <option value="{{ $i }}" {{ $i == $product->rate ? 'selected' : '' }}>{{ $i }}</option>
-            @endfor
-        </select>
-    </td>
-    <td>
-        <div class="form-check form-switch">
-            <input class="form-check-input advertised-toggle" type="checkbox" data-product-id="{{ $product->public_id }}" {{ $product->is_advertised ? 'checked' : '' }}>
-            <label class="form-check-label">{{ $product->is_advertised ? 'Advertised' : 'Normal' }}</label>
-        </div>
     </td>
     <td>
         <div class="d-flex gap-1">
@@ -61,7 +51,7 @@
 </tr>
 @empty
 <tr>
-    <td colspan="10" class="text-center py-4">
+    <td colspan="7" class="text-center py-4">
         <div class="products-empty-state mx-auto text-center">
             <div class="products-empty-icon-wrap">
                 <i class="bi bi-box-seam products-empty-icon"></i>

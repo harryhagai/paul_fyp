@@ -5,10 +5,14 @@ namespace App\Services;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ClickPesaOrderSyncService
 {
-    public function __construct(private readonly ClickPesaService $clickPesaService)
+    public function __construct(
+        private readonly ClickPesaService $clickPesaService,
+        private readonly RobotArmCommandService $robot
+    )
     {
     }
 
@@ -67,7 +71,19 @@ class ClickPesaOrderSyncService
             return false;
         }
 
-        $this->applyPaymentData($order, $payment);
+        $shouldDispatchRobot = $this->applyPaymentData($order, $payment);
+
+        if ($shouldDispatchRobot) {
+            try {
+                $this->robot->dispatchPickForOrderIfNeeded($order->fresh(['orderItems.product']));
+            } catch (Throwable $e) {
+                Log::error('Automatic robot PICK dispatch failed after ClickPesa sync', [
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        }
 
         return true;
     }
@@ -101,14 +117,17 @@ class ClickPesaOrderSyncService
         return is_array($items[0] ?? null) ? $items[0] : null;
     }
 
-    private function applyPaymentData(Order $order, array $payment): void
+    private function applyPaymentData(Order $order, array $payment): bool
     {
-        DB::transaction(function () use ($order, $payment): void {
+        return DB::transaction(function () use ($order, $payment): bool {
             $order = Order::with('orderItems.product')->lockForUpdate()->find($order->id);
 
             if (!$order) {
-                return;
+                return false;
             }
+
+            $wasConfirmed = $order->status === 'confirmed'
+                && in_array(strtolower((string) $order->payment_status), ['paid', 'successful', 'success', 'completed'], true);
 
             $status = strtoupper(trim((string) ($payment['status'] ?? $payment['paymentStatus'] ?? $payment['state'] ?? '')));
             $message = $payment['message'] ?? $payment['description'] ?? $payment['statusDescription'] ?? $order->payment_message;
@@ -135,6 +154,10 @@ class ClickPesaOrderSyncService
             }
 
             $order->save();
+
+            return !$wasConfirmed
+                && $order->status === 'confirmed'
+                && $order->payment_status === 'paid';
         });
     }
 

@@ -161,7 +161,7 @@ class AuthController extends Controller
 
         $validated = $request->validate([
             'name'         => ['required', 'string', 'max:255'],
-            'email'        => ['required', 'email:rfc,dns', 'max:255', 'unique:users,email'],
+            'email'        => ['required', 'email:rfc', 'max:255', 'unique:users,email'],
             'phone_number' => ['required', 'string', 'min:10', 'max:20', 'regex:/^\d+$/', 'unique:users,phone_number'],
             'password'     => ['required', PasswordRule::min(8)->letters()->numbers()],
         ]);

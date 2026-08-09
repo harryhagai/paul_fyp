@@ -16,6 +16,8 @@
      data-upload-url="{{ route('seller.products.media.upload', ['productId' => $product->public_id]) }}"
      data-primary-url-template="{{ route('seller.products.media.primary', ['productId' => $product->public_id, 'mediaId' => '__MEDIA_ID__']) }}"
      data-delete-url-template="{{ route('seller.products.media.delete', ['productId' => $product->public_id, 'mediaId' => '__MEDIA_ID__']) }}"
+     data-delete-all-url="{{ route('seller.products.media.deleteAll', ['productId' => $product->public_id]) }}"
+     data-media-count="{{ $product->media->count() }}"
      data-upload-max-bytes="{{ $uploadMaxBytes }}">
     <div class="toast-container position-fixed top-0 end-0 p-3" id="mediaToastContainer" style="z-index: 1080;"></div>
     <div class="row">
@@ -78,13 +80,21 @@
 
             <!-- Media Gallery -->
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <h5 class="mb-0">
                         <i class="bi bi-grid-3x3-gap me-2"></i>Media Gallery ({{ $product->media->count() }})
                     </h5>
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-sm btn-outline-primary active" id="gridView">Grid</button>
-                        <button class="btn btn-sm btn-outline-primary" id="listView">List</button>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        @if($product->media->isNotEmpty())
+                            <button class="btn btn-sm btn-outline-danger" type="button" id="deleteAllMediaBtn">
+                                <span class="spinner-border spinner-border-sm me-1 d-none" aria-hidden="true"></span>
+                                <i class="bi bi-trash3 me-1"></i>Delete All Media
+                            </button>
+                        @endif
+                        <div class="btn-group" role="group" aria-label="Media gallery view">
+                            <button class="btn btn-sm btn-outline-primary active" type="button" id="gridView">Grid</button>
+                            <button class="btn btn-sm btn-outline-primary" type="button" id="listView">List</button>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body" id="mediaGallery">

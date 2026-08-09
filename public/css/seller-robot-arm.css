@@ -1,0 +1,259 @@
+.seller-robot-page {
+    color: #1f2937;
+}
+
+.robot-page-header {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.robot-page-title {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.robot-page-subtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.robot-header-actions,
+.robot-quick-actions {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+}
+
+.robot-config-alert {
+    border-radius: 8px;
+}
+
+.robot-status-strip {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 16px;
+}
+
+.robot-status-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    min-height: 84px;
+    padding: 14px;
+}
+
+.robot-status-label,
+.robot-command-summary span {
+    color: #64748b;
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.robot-status-item strong,
+.robot-command-summary strong {
+    color: #0f172a;
+    display: block;
+    font-size: 1rem;
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+}
+
+.robot-endpoint {
+    font-size: 0.9rem;
+}
+
+.robot-control-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.robot-quick-actions .btn {
+    flex: 1;
+}
+
+.robot-arm-visual {
+    align-items: end;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    display: flex;
+    height: 210px;
+    justify-content: center;
+    margin-bottom: 16px;
+    overflow: hidden;
+    position: relative;
+}
+
+.robot-base {
+    background: #334155;
+    border-radius: 8px 8px 0 0;
+    bottom: 26px;
+    height: 22px;
+    position: absolute;
+    width: 126px;
+}
+
+.robot-joint {
+    background: #14b8a6;
+    border: 6px solid #0f766e;
+    border-radius: 50%;
+    height: 42px;
+    position: absolute;
+    width: 42px;
+    z-index: 2;
+}
+
+.robot-joint-one {
+    bottom: 42px;
+    left: calc(50% - 21px);
+}
+
+.robot-segment {
+    background: #f59e0b;
+    border-radius: 999px;
+    height: 18px;
+    position: absolute;
+    transform-origin: left center;
+}
+
+.robot-segment-one {
+    bottom: 91px;
+    left: calc(50% - 2px);
+    transform: rotate(-36deg);
+    width: 110px;
+}
+
+.robot-joint-two {
+    bottom: 126px;
+    left: calc(50% + 78px);
+}
+
+.robot-segment-two {
+    bottom: 143px;
+    left: calc(50% + 108px);
+    transform: rotate(20deg);
+    width: 88px;
+}
+
+.robot-gripper {
+    border-bottom: 14px solid #475569;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    bottom: 156px;
+    height: 0;
+    left: calc(50% + 190px);
+    position: absolute;
+    transform: rotate(20deg);
+    width: 34px;
+}
+
+.robot-arm-visual.is-active .robot-segment-one,
+.robot-arm-visual.is-active .robot-segment-two,
+.robot-arm-visual.is-active .robot-gripper {
+    animation: robotPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes robotPulse {
+    from {
+        filter: brightness(1);
+    }
+    to {
+        filter: brightness(1.16);
+    }
+}
+
+.robot-command-summary {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.robot-progress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.robot-progress-step,
+.robot-status-pill,
+.robot-status-badge {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    color: #475569;
+    display: inline-flex;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 7px 10px;
+}
+
+.robot-progress-step.active,
+.robot-status-pill.status-active,
+.robot-status-badge.status-active {
+    background: #ccfbf1;
+    border-color: #5eead4;
+    color: #0f766e;
+}
+
+.robot-status-pill.status-error,
+.robot-status-badge.status-error {
+    background: #fee2e2;
+    border-color: #fecaca;
+    color: #b91c1c;
+}
+
+.robot-status-pill.status-complete,
+.robot-status-badge.status-complete {
+    background: #dcfce7;
+    border-color: #bbf7d0;
+    color: #15803d;
+}
+
+.robot-command-table th {
+    color: #475569;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+}
+
+@media (max-width: 992px) {
+    .robot-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .robot-status-strip,
+    .robot-command-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .robot-header-actions,
+    .robot-quick-actions {
+        width: 100%;
+    }
+
+    .robot-header-actions .btn,
+    .robot-quick-actions .btn {
+        flex: 1;
+    }
+
+    .robot-status-strip,
+    .robot-command-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .robot-arm-visual {
+        height: 180px;
+    }
+}

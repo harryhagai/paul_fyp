@@ -12,6 +12,7 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->group(function () 
     Route::get('/products/{id}/edit', [\App\Http\Controllers\seller\ProductController::class, 'edit'])->name('seller.products.edit');
     Route::get('/products/{id}/media', [\App\Http\Controllers\seller\ProductController::class, 'media'])->name('seller.products.media');
     Route::post('/products/{productId}/media/upload', [\App\Http\Controllers\seller\ProductController::class, 'uploadMedia'])->name('seller.products.media.upload');
+    Route::delete('/products/{productId}/media', [\App\Http\Controllers\seller\ProductController::class, 'deleteAllMedia'])->name('seller.products.media.deleteAll');
     Route::patch('/products/{productId}/media/{mediaId}/primary', [\App\Http\Controllers\seller\ProductController::class, 'setPrimaryMedia'])->name('seller.products.media.primary');
     Route::delete('/products/{productId}/media/{mediaId}', [\App\Http\Controllers\seller\ProductController::class, 'deleteMedia'])->name('seller.products.media.delete');
     Route::put('/products/{id}', [\App\Http\Controllers\seller\ProductController::class, 'update'])->name('seller.products.update');
@@ -21,6 +22,12 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->group(function () 
     Route::get('/orders', [\App\Http\Controllers\seller\OrderController::class, 'index'])->name('seller.orders');
     Route::get('/orders/{id}', [\App\Http\Controllers\seller\OrderController::class, 'show'])->name('seller.orders.show');
     Route::patch('/orders/{id}/status', [\App\Http\Controllers\seller\OrderController::class, 'updateStatus'])->name('seller.orders.updateStatus');
+
+    Route::get('/robot-arm', [\App\Http\Controllers\seller\RobotArmController::class, 'index'])->name('seller.robot-arm');
+    Route::get('/robot-arm/status', [\App\Http\Controllers\seller\RobotArmController::class, 'status'])->name('seller.robot-arm.status');
+    Route::post('/robot-arm/pick', [\App\Http\Controllers\seller\RobotArmController::class, 'pick'])->name('seller.robot-arm.pick');
+    Route::post('/robot-arm/home', [\App\Http\Controllers\seller\RobotArmController::class, 'home'])->name('seller.robot-arm.home');
+    Route::post('/robot-arm/stop', [\App\Http\Controllers\seller\RobotArmController::class, 'stop'])->name('seller.robot-arm.stop');
 
     Route::get('/customers', [\App\Http\Controllers\seller\CustomerController::class, 'index'])->name('seller.customers');
     Route::post('/customers', [\App\Http\Controllers\seller\CustomerController::class, 'store'])->name('seller.customers.store');

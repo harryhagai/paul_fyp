@@ -59,6 +59,8 @@
                 </li>
             @elseif(Auth::check() && Auth::user()->role === 'seller')
                 <li class="nav-item"><a href="{{ route('seller.dashboard') }}" class="nav-link {{ request()->is('seller/dashboard') ? 'active' : '' }}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                <li class="sidebar-section-label">Robot Arm</li>
+                <li class="nav-item"><a href="{{ route('seller.robot-arm') }}" class="nav-link {{ request()->is('seller/robot-arm*') ? 'active' : '' }}"><i class="bi bi-robot"></i> Robot Arm</a></li>
                 <li class="sidebar-section-label">Store</li>
                 <li class="nav-item"><a href="{{ route('seller.categories') }}" class="nav-link {{ request()->is('seller/categories') ? 'active' : '' }}"><i class="bi bi-tags"></i> Categories</a></li>
                 <li class="nav-item"><a href="{{ route('seller.products') }}" class="nav-link {{ request()->is('seller/products*') ? 'active' : '' }}"><i class="bi bi-basket-fill"></i> Products</a></li>

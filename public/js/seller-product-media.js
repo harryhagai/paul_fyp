@@ -6,6 +6,8 @@ $(document).ready(function () {
     const uploadUrl = pageRoot.dataset.uploadUrl;
     const primaryUrlTemplate = pageRoot.dataset.primaryUrlTemplate;
     const deleteUrlTemplate = pageRoot.dataset.deleteUrlTemplate;
+    const deleteAllUrl = pageRoot.dataset.deleteAllUrl;
+    const mediaCount = parseInt(pageRoot.dataset.mediaCount || '0', 10);
     const uploadMaxBytes = parseInt(pageRoot.dataset.uploadMaxBytes || '0', 10);
 
     const rootStyle = getComputedStyle(document.documentElement);
@@ -155,6 +157,29 @@ $(document).ready(function () {
         });
     }
 
+    function confirmDeleteAllMedia() {
+        return Swal.fire({
+            icon: 'warning',
+            title: 'Delete all media?',
+            html: `You are about to permanently delete <strong>${mediaCount}</strong> media file${mediaCount === 1 ? '' : 's'} from this product.<br><small>This action cannot be undone.</small>`,
+            showCancelButton: true,
+            showCloseButton: true,
+            buttonsStyling: false,
+            focusCancel: true,
+            confirmButtonText: '<i class="bi bi-trash3 me-1"></i>Delete All',
+            cancelButtonText: '<i class="bi bi-x-circle me-1"></i>Cancel',
+            customClass: {
+                popup: 'media-confirm-popup',
+                icon: 'media-delete-all-icon',
+                title: 'media-confirm-title',
+                htmlContainer: 'media-confirm-text',
+                actions: 'media-confirm-actions',
+                confirmButton: 'media-delete-all-button btn',
+                cancelButton: 'media-cancel-button btn'
+            }
+        });
+    }
+
     $('#uploadSelectedBtn').on('click', function () {
         uploadFiles();
     });
@@ -292,6 +317,40 @@ $(document).ready(function () {
             }
         });
     };
+
+    $('#deleteAllMediaBtn').on('click', function () {
+        const button = this;
+
+        confirmDeleteAllMedia().then(function (result) {
+            if (!result.isConfirmed) return;
+
+            button.disabled = true;
+            button.querySelector('.spinner-border')?.classList.remove('d-none');
+            button.querySelector('.bi-trash3')?.classList.add('d-none');
+
+            $.ajax({
+                url: deleteAllUrl,
+                type: 'DELETE',
+                success: function (response) {
+                    if (!response.success) {
+                        showToast('error', response.message || 'Delete all failed');
+                        return;
+                    }
+
+                    showToast(response.file_cleanup_warning ? 'warning' : 'success', response.message);
+                    setTimeout(() => location.reload(), 700);
+                },
+                error: function (xhr) {
+                    showToast('error', (xhr.responseJSON && xhr.responseJSON.message) || 'Delete all failed');
+                },
+                complete: function () {
+                    button.disabled = false;
+                    button.querySelector('.spinner-border')?.classList.add('d-none');
+                    button.querySelector('.bi-trash3')?.classList.remove('d-none');
+                }
+            });
+        });
+    });
 
     window.openMediaModal = function (src, type) {
         let content = '';

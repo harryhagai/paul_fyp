@@ -4,7 +4,9 @@ namespace App\Http\Controllers\seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\RobotCommand;
 use App\Models\SiteSetting;
+use App\Services\RobotArmCommandService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -109,7 +111,7 @@ class OrderController extends Controller
         }
     }
 
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $id, RobotArmCommandService $robot)
     {
         $this->autoCancelExpiredPendingOrders();
 
@@ -171,11 +173,30 @@ class OrderController extends Controller
             $order->save();
         });
 
+        $robotCommand = null;
+        if ($newStatus === 'confirmed') {
+            $robotCommand = $robot->dispatchPickForOrderIfNeeded($order->fresh(['orderItems.product']));
+        }
+
         return response()->json([
             'success' => true,
-            'message' => 'Order status updated successfully',
-            'order' => $order
+            'message' => $this->statusUpdateMessage($robotCommand),
+            'order' => $order,
+            'robot_command' => $robotCommand,
         ]);
+    }
+
+    private function statusUpdateMessage(?RobotCommand $robotCommand): string
+    {
+        if (!$robotCommand) {
+            return 'Order status updated successfully';
+        }
+
+        if ($robotCommand->status === RobotCommand::STATUS_ERROR) {
+            return 'Order confirmed, but robot command needs attention: ' . ($robotCommand->error ?: 'COMMAND_FAILED');
+        }
+
+        return 'Order confirmed and PICK command sent to robot arm.';
     }
 
     private function autoCancelExpiredPendingOrders(): void
