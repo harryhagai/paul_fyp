@@ -79,95 +79,216 @@
     flex: 1;
 }
 
-.robot-arm-visual {
-    align-items: end;
-    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    display: flex;
-    height: 210px;
-    justify-content: center;
-    margin-bottom: 16px;
+.robot-process-panel {
+    background:
+        radial-gradient(circle at 8% 15%, rgba(20, 184, 166, 0.14), transparent 32%),
+        linear-gradient(145deg, #f8fffe 0%, #f4f8fb 62%, #eef4f7 100%);
+    border: 1px solid #dbe7e7;
+    border-radius: 14px;
+    margin-bottom: 20px;
     overflow: hidden;
+    padding: 24px 26px 22px;
     position: relative;
 }
 
-.robot-base {
-    background: #334155;
-    border-radius: 8px 8px 0 0;
-    bottom: 26px;
-    height: 22px;
+.robot-process-panel::after {
+    background-image: radial-gradient(#0d9488 0.75px, transparent 0.75px);
+    background-size: 13px 13px;
+    content: '';
+    inset: 0;
+    opacity: 0.09;
+    pointer-events: none;
     position: absolute;
-    width: 126px;
 }
 
-.robot-joint {
-    background: #14b8a6;
-    border: 6px solid #0f766e;
+.robot-process-overview {
+    align-items: center;
+    display: flex;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.robot-process-orbit {
+    align-items: center;
+    display: flex;
+    flex: 0 0 72px;
+    height: 72px;
+    justify-content: center;
+    position: relative;
+}
+
+.robot-process-ring {
+    border: 2px solid rgba(13, 148, 136, 0.2);
     border-radius: 50%;
-    height: 42px;
+    inset: 0;
     position: absolute;
-    width: 42px;
+}
+
+.robot-process-icon {
+    align-items: center;
+    background: linear-gradient(145deg, #0d9488, #0f766e);
+    border-radius: 18px;
+    box-shadow: 0 10px 24px rgba(13, 148, 136, 0.2);
+    color: #ffffff;
+    display: flex;
+    font-size: 1.7rem;
+    height: 52px;
+    justify-content: center;
+    position: relative;
+    width: 52px;
+    z-index: 1;
+}
+
+.robot-process-signal {
+    background: #94a3b8;
+    border: 3px solid #f8fffe;
+    border-radius: 50%;
+    height: 14px;
+    position: absolute;
+    right: 3px;
+    top: 4px;
+    width: 14px;
     z-index: 2;
 }
 
-.robot-joint-one {
-    bottom: 42px;
-    left: calc(50% - 21px);
+.robot-process-panel.is-processing .robot-process-ring {
+    animation: robotProcessPulse 1.7s ease-out infinite;
+    border-color: rgba(13, 148, 136, 0.48);
 }
 
-.robot-segment {
-    background: #f59e0b;
-    border-radius: 999px;
-    height: 18px;
+.robot-process-panel.is-processing .robot-process-signal {
+    animation: robotSignal 1.1s ease-in-out infinite alternate;
+    background: #14b8a6;
+}
+
+.robot-process-panel.is-complete .robot-process-signal {
+    background: #22c55e;
+}
+
+.robot-process-panel.is-error .robot-process-icon {
+    background: linear-gradient(145deg, #ef4444, #b91c1c);
+    box-shadow: 0 10px 24px rgba(239, 68, 68, 0.18);
+}
+
+.robot-process-panel.is-error .robot-process-signal {
+    background: #ef4444;
+}
+
+@keyframes robotProcessPulse {
+    0% { opacity: 0.9; transform: scale(0.86); }
+    100% { opacity: 0; transform: scale(1.25); }
+}
+
+@keyframes robotSignal {
+    from { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.32); }
+    to { box-shadow: 0 0 0 7px rgba(20, 184, 166, 0); }
+}
+
+.robot-process-copy {
+    min-width: 0;
+}
+
+.robot-process-kicker {
+    color: #0f766e;
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.robot-process-copy h3 {
+    color: #0f172a;
+    font-size: 1.25rem;
+    font-weight: 750;
+    margin: 0 0 4px;
+}
+
+.robot-process-copy p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.robot-process-track {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin-top: 28px;
+    position: relative;
+    z-index: 1;
+}
+
+.robot-process-line {
+    background: #dbe4e8;
+    height: 3px;
+    left: 10%;
+    overflow: hidden;
     position: absolute;
-    transform-origin: left center;
+    right: 10%;
+    top: 17px;
 }
 
-.robot-segment-one {
-    bottom: 91px;
-    left: calc(50% - 2px);
-    transform: rotate(-36deg);
-    width: 110px;
+.robot-process-line span {
+    background: linear-gradient(90deg, #14b8a6, #0d9488);
+    display: block;
+    height: 100%;
+    transition: width 500ms ease;
+    width: 0;
 }
 
-.robot-joint-two {
-    bottom: 126px;
-    left: calc(50% + 78px);
+.robot-process-step {
+    align-items: center;
+    color: #94a3b8;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    position: relative;
+    text-align: center;
 }
 
-.robot-segment-two {
-    bottom: 143px;
-    left: calc(50% + 108px);
-    transform: rotate(20deg);
-    width: 88px;
+.robot-process-marker {
+    align-items: center;
+    background: #ffffff;
+    border: 2px solid #dbe4e8;
+    border-radius: 50%;
+    display: flex;
+    font-size: 0.85rem;
+    height: 36px;
+    justify-content: center;
+    margin-bottom: 9px;
+    transition: 250ms ease;
+    width: 36px;
 }
 
-.robot-gripper {
-    border-bottom: 14px solid #475569;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    bottom: 156px;
-    height: 0;
-    left: calc(50% + 190px);
-    position: absolute;
-    transform: rotate(20deg);
-    width: 34px;
+.robot-process-step strong {
+    color: #64748b;
+    font-size: 0.76rem;
+    font-weight: 800;
 }
 
-.robot-arm-visual.is-active .robot-segment-one,
-.robot-arm-visual.is-active .robot-segment-two,
-.robot-arm-visual.is-active .robot-gripper {
-    animation: robotPulse 1.2s ease-in-out infinite alternate;
+.robot-process-step small {
+    color: #94a3b8;
+    font-size: 0.66rem;
+    margin-top: 2px;
 }
 
-@keyframes robotPulse {
-    from {
-        filter: brightness(1);
-    }
-    to {
-        filter: brightness(1.16);
-    }
+.robot-process-step.is-complete .robot-process-marker,
+.robot-process-step.is-current .robot-process-marker {
+    background: #0d9488;
+    border-color: #0d9488;
+    color: #ffffff;
+}
+
+.robot-process-step.is-current .robot-process-marker {
+    box-shadow: 0 0 0 6px rgba(13, 148, 136, 0.12);
+    transform: scale(1.06);
+}
+
+.robot-process-step.is-complete strong,
+.robot-process-step.is-current strong {
+    color: #0f766e;
 }
 
 .robot-command-summary {
@@ -176,14 +297,6 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-.robot-progress {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 16px;
-}
-
-.robot-progress-step,
 .robot-status-pill,
 .robot-status-badge {
     background: #f1f5f9;
@@ -197,7 +310,6 @@
     padding: 7px 10px;
 }
 
-.robot-progress-step.active,
 .robot-status-pill.status-active,
 .robot-status-badge.status-active {
     background: #ccfbf1;
@@ -253,7 +365,72 @@
         grid-template-columns: 1fr;
     }
 
-    .robot-arm-visual {
-        height: 180px;
+    .robot-process-panel {
+        padding: 20px 16px;
+    }
+
+    .robot-process-overview {
+        align-items: flex-start;
+    }
+
+    .robot-process-orbit {
+        flex-basis: 58px;
+        height: 58px;
+    }
+
+    .robot-process-icon {
+        border-radius: 15px;
+        font-size: 1.35rem;
+        height: 44px;
+        width: 44px;
+    }
+
+    .robot-process-track {
+        gap: 14px;
+        grid-template-columns: 1fr;
+        margin-left: 8px;
+        margin-top: 24px;
+    }
+
+    .robot-process-line {
+        bottom: 20px;
+        height: auto;
+        left: 17px;
+        right: auto;
+        top: 18px;
+        width: 3px;
+    }
+
+    .robot-process-line span {
+        display: none;
+    }
+
+    .robot-process-step {
+        align-items: center;
+        display: grid;
+        gap: 0 12px;
+        grid-template-columns: 36px 1fr;
+        text-align: left;
+    }
+
+    .robot-process-marker {
+        grid-row: span 2;
+        margin: 0;
+    }
+
+    .robot-process-step small {
+        margin: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .robot-process-panel.is-processing .robot-process-ring,
+    .robot-process-panel.is-processing .robot-process-signal {
+        animation: none;
+    }
+
+    .robot-process-line span,
+    .robot-process-marker {
+        transition: none;
     }
 }

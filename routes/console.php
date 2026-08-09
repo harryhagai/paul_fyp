@@ -24,13 +24,7 @@ Artisan::command('robot:poll', function (RobotArmCommandService $robot) {
         return 0;
     }
 
-    if (! $robot->hasActiveCommand()) {
-        $this->info('No active robot command to poll.');
-
-        return 0;
-    }
-
-    $result = $robot->pollStatus();
+    $result = $robot->processQueue();
 
     if (! $result['ok']) {
         $this->error($result['message'] ?: 'Robot status poll failed.');
@@ -38,10 +32,12 @@ Artisan::command('robot:poll', function (RobotArmCommandService $robot) {
         return 1;
     }
 
-    $this->info('Robot status: '.$result['status']);
+    $this->info($result['queue_empty']
+        ? 'Robot queue is empty.'
+        : 'Robot queue status: '.$result['status']);
 
     return 0;
-})->purpose('Poll the ESP32 and synchronize the active robot command');
+})->purpose('Process the robot PICK queue and synchronize the active command');
 
 Schedule::command('robot:poll')
     ->everyFiveSeconds()

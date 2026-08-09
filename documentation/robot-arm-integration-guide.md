@@ -24,6 +24,8 @@ Mawasiliano yanafuata mtiririko huu:
 Customer
    ↓
 E-Commerce Website
+   ↓ FIFO Robot Command Queue
+Queue Worker
    ↓ HTTP POST kupitia Wi-Fi
 ESP32
    ↓
@@ -39,13 +41,15 @@ Mtiririko kamili ni:
 1. Seller anaweka `robot_location` kwenye product.
 2. Customer anaweka order na kukamilisha malipo.
 3. Order ikithibitishwa, website inatafuta robot location ya product.
-4. Website inahifadhi robot command kwenye database.
-5. Website inatuma HTTP `POST` kwenda endpoint ya ESP32.
-6. ESP32 inakagua command, order ID, na location.
-7. ESP32 inatumia trajectory iliyofundishwa kuchukua parcel.
-8. Robot inaweka parcel kwenye conveyor na kurudi `HOME`.
-9. Website inauliza status ya robot kila baada ya sekunde tano.
-10. ESP32 ikirudisha `COMPLETED`, robot command na order vinawekwa completed.
+4. Website inagawa order kuwa pick cycle moja kwa kila physical item.
+5. Pick cycles zinahifadhiwa kwenye FIFO queue kwa status `QUEUED`.
+6. Queue worker inatuma oldest queued cycle ikiwa hakuna active command.
+7. ESP32 inakagua command, order ID, na location.
+8. ESP32 inatumia trajectory iliyofundishwa kuchukua parcel.
+9. Robot inaweka parcel kwenye conveyor na kurudi `HOME`.
+10. Website inauliza status ya robot kila baada ya sekunde tano.
+11. ESP32 ikirudisha `COMPLETED`, worker inatuma cycle inayofuata.
+12. Order inawekwa completed baada ya pick cycles zake zote kukamilika.
 
 ## 3. Sehemu Muhimu za Mfumo
 
@@ -72,6 +76,7 @@ Kila command inahifadhi taarifa zifuatazo:
 - Command iliyotumwa
 - Order reference
 - Robot location
+- Queue batch na cycle number
 - Request JSON
 - Response JSON
 - Status
@@ -94,6 +99,7 @@ Ukurasa huu unaonyesha:
 - Kama ESP32 imeunganishwa
 - Status ya sasa ya robot
 - Active command
+- Oldest queued command na cycle progress
 - Order inayoshughulikiwa
 - Parcel location
 - Error ya mwisho
@@ -224,7 +230,7 @@ Website pia inaweza kuhifadhi errors zifuatazo:
 - `CONNECTION_FAILED` — website imeshindwa kuifikia ESP32
 - `INVALID_ROBOT_RESPONSE` — ESP32 imerudisha JSON au status isiyokubalika
 - `LOCATION_NOT_ASSIGNED` — product haina robot location
-- `MULTIPLE_PICKS_NOT_SUPPORTED` — order inahitaji zaidi ya pick moja
+- `PREVIOUS_PICK_FAILED` — cycle haikutumwa kwa sababu cycle ya awali ya batch imeshindwa
 - `ROBOT_STOPPED` — PICK operation imesimamishwa
 - `COMMAND_FAILED` — command imeshindwa kwa sababu nyingine
 
@@ -234,14 +240,16 @@ Connection au status poll ikishindwa kwa muda, active command haibadilishwi moja
 
 Automatic `PICK` inafanyika baada ya order kuthibitishwa.
 
-Kwa protocol ya sasa:
+Kwa automatic queue:
 
-- Order lazima iwe na product moja.
-- Quantity lazima iwe `1`.
-- Product lazima iwe na robot location.
+- Order inaweza kuwa na products nyingi.
+- Quantity inaweza kuwa zaidi ya `1`; kila unit inapata pick cycle yake.
+- Kila product lazima iwe na robot location.
 - Location lazima iwe ndani ya locations zilizowekwa kwenye configuration.
 
-Order yenye products nyingi au quantity zaidi ya moja inahitaji pick cycles nyingi. Mfumo wa sasa unaizuia kwa error `MULTIPLE_PICKS_NOT_SUPPORTED` ili robot isichukue parcel moja na kuacha nyingine kimakosa.
+Mfano: order yenye Product A quantity `2` na Product B quantity `1` inatengeneza cycles tatu. Cycles zinafanyika kwa sequence `1/3`, `2/3`, na `3/3`. Order haibadiliki kuwa completed mpaka cycles zote tatu zirudishe `COMPLETED`.
+
+Orders nyingi zinafuata FIFO kwa command ID: order iliyoingia queue kwanza inashughulikiwa kwanza. Website haitumi `PICK` ya pili wakati command ya kwanza bado iko active.
 
 ## 8. Usanidi wa Website
 
@@ -287,15 +295,15 @@ Command hii inaanzisha:
 
 Production server inapaswa kuwa na Laravel scheduler inayofanya kazi muda wote.
 
-## 9. Background Status Polling
+## 9. Background Queue Processing na Status Polling
 
-Website ina command ya kuomba status:
+Website ina command ya kuendesha queue worker na kuomba status ya active command:
 
 ```bash
 php artisan robot:poll
 ```
 
-Scheduler huiendesha kila baada ya sekunde tano ikiwa kuna active command. Ikiwa robot haijawezeshwa au hakuna active command, hakuna HTTP request inayotumwa kwa ESP32.
+Scheduler huiendesha kila baada ya sekunde tano. Ikiwa kuna active command, ina-poll status yake. Ikiwa imekamilika au hakuna active command, inatuma oldest `QUEUED` cycle. Ikiwa queue ni empty, hakuna HTTP request inayotumwa kwa ESP32.
 
 Kwa production, hakikisha scheduler imeanzishwa kwa mojawapo ya njia zinazokubalika na mazingira ya server. Mfano wa process ya muda wote:
 
@@ -418,9 +426,9 @@ Robot is idle
 
 Fungua seller products page, edit product, kisha chagua Robot Location.
 
-### MULTIPLE_PICKS_NOT_SUPPORTED
+### Command inabaki QUEUED
 
-Order ina products nyingi au quantity zaidi ya moja. Version ya sasa ya automation inaruhusu pick cycle moja kwa order. Order hii inahitaji kushughulikiwa manually au protocol iongezwe ili iwe na command queue ya pick cycles nyingi.
+Hii ni status ya kawaida ikiwa robot inashughulikia command nyingine. Hakikisha Laravel scheduler inaendelea kufanya kazi. `ROBOT_BUSY` ikirudishwa, cycle inarudishwa kwenye queue na itajaribiwa tena.
 
 ### Order haibadiliki kuwa completed
 
@@ -455,4 +463,4 @@ Kabla ya demonstration:
 
 ## 14. Muhtasari
 
-Website inachagua parcel location kutoka kwenye product, inahifadhi command, na kutuma high-level `PICK` command kwa ESP32 kupitia HTTP. ESP32 ndiyo inayosimamia robot movement kwa kutumia trajectories zilizofundishwa. Website inafuatilia status, inalinda dhidi ya responses zisizo sahihi au zilizochelewa, na inabadilisha order kuwa completed baada ya ESP32 kuthibitisha `COMPLETED`.
+Website inagawa confirmed orders kuwa pick cycles, inazihifadhi kwenye persistent FIFO queue, na kutuma high-level `PICK` command moja kwa wakati kwa ESP32 kupitia HTTP. ESP32 ndiyo inayosimamia robot movement kwa kutumia trajectories zilizofundishwa. Website inafuatilia kila cycle, inatuma inayofuata baada ya `COMPLETED`, na inabadilisha order kuwa completed baada ya cycles zake zote kukamilika.

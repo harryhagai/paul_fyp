@@ -15,10 +15,7 @@ class RobotArmController extends Controller
     public function index(RobotArmCommandService $robot): View
     {
         $recentCommands = $this->recentCommands();
-        $activeCommand = RobotCommand::with('order')
-            ->whereIn('status', RobotCommand::activeStatuses())
-            ->latest()
-            ->first();
+        $activeCommand = $robot->currentQueueCommand()?->load('order');
 
         $orders = Order::with(['orderItems.product'])
             ->where('status', 'confirmed')
@@ -47,7 +44,12 @@ class RobotArmController extends Controller
 
     public function status(RobotArmCommandService $robot): JsonResponse
     {
-        $status = $robot->pollStatus();
+        $status = $robot->processQueue();
+
+        // An empty queue only means the worker is healthy; probe ESP32 before reporting connectivity.
+        if (($status['queue_empty'] ?? false) && $status['command'] === null) {
+            $status = $robot->pollStatus();
+        }
 
         return response()->json([
             'success' => true,
@@ -58,7 +60,7 @@ class RobotArmController extends Controller
                 'message' => $status['message'],
                 'data' => $status['data'],
             ],
-            'active_command' => $this->serializeCommand($status['command'] ?: RobotCommand::with('order')->whereIn('status', RobotCommand::activeStatuses())->latest()->first()),
+            'active_command' => $this->serializeCommand($status['command'] ?: $robot->currentQueueCommand()),
             'recent_commands' => $this->recentCommands()->map(fn (RobotCommand $command) => $this->serializeCommand($command))->values(),
         ]);
     }
@@ -75,11 +77,11 @@ class RobotArmController extends Controller
             ->orWhere('order_number', $validated['order_id'])
             ->firstOrFail();
 
-        $command = $robot->dispatchPickForOrder($order, isset($validated['location']) ? (int) $validated['location'] : null);
+        $command = $robot->dispatchPickForOrderIfNeeded($order, isset($validated['location']) ? (int) $validated['location'] : null);
 
         return response()->json([
             'success' => ! in_array($command->status, [RobotCommand::STATUS_ERROR, RobotCommand::STATUS_STOPPED], true),
-            'message' => $command->error ?: 'PICK command sent to robot arm.',
+            'message' => $command->error ?: 'Order added to the robot queue.',
             'command' => $this->serializeCommand($command),
         ], $command->status === RobotCommand::STATUS_ERROR ? 422 : 200);
     }
@@ -125,6 +127,8 @@ class RobotArmController extends Controller
             'order_reference' => $command->order_reference,
             'command' => $command->command,
             'location' => $command->location,
+            'sequence' => $command->sequence,
+            'total' => $command->total,
             'status' => $command->status,
             'error' => $command->error,
             'created_at' => optional($command->created_at)->format('M d, H:i:s'),

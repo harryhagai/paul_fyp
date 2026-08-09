@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\seller\RobotArmController;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -157,7 +158,96 @@ class RobotArmIntegrationTest extends TestCase
         $this->assertSame(RobotCommand::STATUS_PLACING, $command->fresh()->status);
     }
 
-    public function test_a_failed_pick_can_be_retried_idempotently(): void
+    public function test_duplicate_confirmation_only_queues_an_order_once(): void
+    {
+        $order = $this->createOrder([2]);
+        Http::fake();
+
+        $service = app(RobotArmCommandService::class);
+        $first = $service->dispatchPickForOrderIfNeeded($order);
+        $second = $service->dispatchPickForOrderIfNeeded($order);
+
+        $this->assertSame(RobotCommand::STATUS_QUEUED, $first->status);
+        $this->assertSame($first->id, $second->id);
+        $this->assertDatabaseCount('robot_arm_commands', 1);
+        Http::assertNothingSent();
+    }
+
+    public function test_three_orders_are_processed_in_fifo_order(): void
+    {
+        $orders = collect([
+            $this->createOrder([1]),
+            $this->createOrder([2]),
+            $this->createOrder([3]),
+        ]);
+
+        Http::fakeSequence()
+            ->push(['status' => 'ACCEPTED', 'order_id' => $orders[0]->order_number, 'location' => 1])
+            ->push(['status' => 'COMPLETED', 'order_id' => $orders[0]->order_number, 'location' => 1])
+            ->push(['status' => 'ACCEPTED', 'order_id' => $orders[1]->order_number, 'location' => 2])
+            ->push(['status' => 'COMPLETED', 'order_id' => $orders[1]->order_number, 'location' => 2])
+            ->push(['status' => 'ACCEPTED', 'order_id' => $orders[2]->order_number, 'location' => 3])
+            ->push(['status' => 'COMPLETED', 'order_id' => $orders[2]->order_number, 'location' => 3]);
+
+        $service = app(RobotArmCommandService::class);
+        $orders->each(fn (Order $order) => $service->dispatchPickForOrderIfNeeded($order));
+
+        $this->assertSame(3, RobotCommand::where('status', RobotCommand::STATUS_QUEUED)->count());
+        Http::assertNothingSent();
+
+        $service->processQueue();
+        $service->processQueue();
+        $service->processQueue();
+        $service->processQueue();
+
+        $pickOrder = Http::recorded()
+            ->map(fn (array $entry) => $entry[0]->data())
+            ->filter(fn (array $payload) => ($payload['command'] ?? null) === 'PICK')
+            ->pluck('order_id')
+            ->values()
+            ->all();
+
+        $this->assertSame($orders->pluck('order_number')->all(), $pickOrder);
+        $this->assertSame(3, RobotCommand::where('status', RobotCommand::STATUS_COMPLETED)->count());
+        $orders->each(fn (Order $order) => $this->assertSame('completed', $order->fresh()->status));
+    }
+
+    public function test_multi_item_order_is_split_into_serial_pick_cycles(): void
+    {
+        $order = $this->createOrder([1, 2]);
+        $order->orderItems->first()->update(['quantity' => 2]);
+        $order = $order->fresh(['orderItems.product']);
+
+        Http::fakeSequence()
+            ->push(['status' => 'ACCEPTED', 'order_id' => $order->order_number, 'location' => 1])
+            ->push(['status' => 'COMPLETED', 'order_id' => $order->order_number, 'location' => 1])
+            ->push(['status' => 'ACCEPTED', 'order_id' => $order->order_number, 'location' => 1])
+            ->push(['status' => 'COMPLETED', 'order_id' => $order->order_number, 'location' => 1])
+            ->push(['status' => 'ACCEPTED', 'order_id' => $order->order_number, 'location' => 2])
+            ->push(['status' => 'COMPLETED', 'order_id' => $order->order_number, 'location' => 2]);
+
+        $service = app(RobotArmCommandService::class);
+        $service->dispatchPickForOrderIfNeeded($order);
+
+        $commands = RobotCommand::where('order_id', $order->id)->oldest('sequence')->get();
+        $this->assertSame([1, 1, 2], $commands->pluck('location')->all());
+        $this->assertSame([1, 2, 3], $commands->pluck('sequence')->all());
+        $this->assertSame([3, 3, 3], $commands->pluck('total')->all());
+        Http::assertNothingSent();
+
+        $service->processQueue();
+        $service->processQueue();
+        $this->assertSame('confirmed', $order->fresh()->status);
+
+        $service->processQueue();
+        $this->assertSame('confirmed', $order->fresh()->status);
+
+        $service->processQueue();
+        $this->assertSame('completed', $order->fresh()->status);
+        $this->assertSame(3, RobotCommand::where('order_id', $order->id)->where('status', RobotCommand::STATUS_COMPLETED)->count());
+    }
+
+    public function test_robot_busy_keeps_a_queued_command_available_for_retry(): void
     {
         $order = $this->createOrder([2]);
         Http::fakeSequence()
@@ -174,15 +264,27 @@ class RobotArmIntegrationTest extends TestCase
             ]);
 
         $service = app(RobotArmCommandService::class);
-        $first = $service->dispatchPickForOrderIfNeeded($order);
-        $second = $service->dispatchPickForOrderIfNeeded($order);
-        $sameActiveCommand = $service->dispatchPickForOrderIfNeeded($order);
+        $command = $service->dispatchPickForOrderIfNeeded($order);
 
-        $this->assertSame(RobotCommand::STATUS_ERROR, $first->status);
-        $this->assertSame(RobotCommand::STATUS_ACCEPTED, $second->status);
-        $this->assertNotSame($first->id, $second->id);
-        $this->assertSame($second->id, $sameActiveCommand->id);
+        $service->processQueue();
+        $this->assertSame(RobotCommand::STATUS_QUEUED, $command->fresh()->status);
+
+        $service->processQueue();
+        $this->assertSame(RobotCommand::STATUS_ACCEPTED, $command->fresh()->status);
         Http::assertSentCount(2);
+    }
+
+    public function test_monitor_reports_offline_when_queue_is_empty_and_esp32_is_unreachable(): void
+    {
+        Http::fake(['*' => Http::response(['message' => 'unreachable'], 503)]);
+
+        $response = app(RobotArmController::class)
+            ->status(app(RobotArmCommandService::class))
+            ->getData(true);
+
+        $this->assertFalse($response['robot']['online']);
+        $this->assertSame(RobotCommand::STATUS_ERROR, $response['robot']['status']);
+        Http::assertSentCount(1);
     }
 
     public function test_automatic_pick_rejects_an_ambiguous_multi_location_order(): void

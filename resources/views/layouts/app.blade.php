@@ -18,7 +18,9 @@
 
     {{-- Custom CSS --}}
     <link href="{{ asset('css/header.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/footer.css') }}" rel="stylesheet">
+    @unless (trim($__env->yieldContent('hideFooter')) === 'true')
+        <link href="{{ asset('css/footer.css') }}" rel="stylesheet">
+    @endunless
 
     <style>
         @php
@@ -122,8 +124,10 @@
 </main>
 
 
-    {{-- Footer Component --}}
-    @include('components.footer')
+    @unless (trim($__env->yieldContent('hideFooter')) === 'true')
+        {{-- Footer Component --}}
+        @include('components.footer')
+    @endunless
 
     {{-- Bootstrap JS Bundle --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -134,7 +138,9 @@
     {{-- Custom JS --}}
     <script src="{{ asset('js/header.js') }}"></script>
     <script src="{{ asset('js/buttonSpinner.js') }}"></script>
-    <script src="{{ asset('js/footer.js') }}"></script>
+    @unless (trim($__env->yieldContent('hideFooter')) === 'true')
+        <script src="{{ asset('js/footer.js') }}"></script>
+    @endunless
 
     @auth
     {{-- Auto Logout on Inactivity 

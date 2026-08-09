@@ -15,6 +15,8 @@ class RobotCommand extends Model
 
     public const STATUS_IDLE = 'IDLE';
 
+    public const STATUS_QUEUED = 'QUEUED';
+
     public const STATUS_PENDING = 'PENDING';
 
     public const STATUS_ACCEPTED = 'ACCEPTED';
@@ -34,9 +36,13 @@ class RobotCommand extends Model
     protected $fillable = [
         'public_id',
         'order_id',
+        'order_item_id',
         'order_reference',
+        'batch_id',
         'command',
         'location',
+        'sequence',
+        'total',
         'status',
         'error',
         'request_payload',
@@ -125,6 +131,7 @@ class RobotCommand extends Model
     {
         return [
             self::STATUS_IDLE,
+            self::STATUS_QUEUED,
             ...self::activeStatuses(),
             self::STATUS_COMPLETED,
             self::STATUS_ERROR,
@@ -138,6 +145,10 @@ class RobotCommand extends Model
 
         if ($currentStatus === $nextStatus || $currentStatus === '') {
             return true;
+        }
+
+        if ($currentStatus === self::STATUS_QUEUED) {
+            return $nextStatus === self::STATUS_PENDING;
         }
 
         if (in_array($currentStatus, [self::STATUS_COMPLETED, self::STATUS_ERROR, self::STATUS_STOPPED], true)) {

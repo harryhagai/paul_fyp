@@ -108,20 +108,47 @@
                         <span class="robot-status-pill" id="robotStatusPill">{{ $activeCommand->status ?? 'IDLE' }}</span>
                     </div>
                     <div class="card-body">
-                        <div class="robot-arm-visual" aria-hidden="true">
-                            <div class="robot-base"></div>
-                            <div class="robot-joint robot-joint-one"></div>
-                            <div class="robot-segment robot-segment-one"></div>
-                            <div class="robot-joint robot-joint-two"></div>
-                            <div class="robot-segment robot-segment-two"></div>
-                            <div class="robot-gripper"></div>
+                        <div class="robot-process-panel" id="robotProcessPanel" aria-live="polite">
+                            <div class="robot-process-overview">
+                                <div class="robot-process-orbit" aria-hidden="true">
+                                    <span class="robot-process-ring"></span>
+                                    <span class="robot-process-icon"><i class="bi bi-robot"></i></span>
+                                    <span class="robot-process-signal"></span>
+                                </div>
+                                <div class="robot-process-copy">
+                                    <span class="robot-process-kicker">Automation workflow</span>
+                                    <h3 id="robotProcessTitle">Ready for next command</h3>
+                                    <p id="robotProcessMessage">The robot arm is standing by for a confirmed order.</p>
+                                </div>
+                            </div>
+
+                            <div class="robot-process-track" aria-label="Robot command progress">
+                                <div class="robot-process-line" aria-hidden="true">
+                                    <span id="robotProcessFill"></span>
+                                </div>
+                                @foreach([
+                                    ['status' => 'ACCEPTED', 'label' => 'Accepted', 'caption' => 'Command ready', 'icon' => 'bi-check2'],
+                                    ['status' => 'MOVING', 'label' => 'Moving', 'caption' => 'Going to shelf', 'icon' => 'bi-arrow-right'],
+                                    ['status' => 'PICKING', 'label' => 'Picking', 'caption' => 'Collecting item', 'icon' => 'bi-box-seam'],
+                                    ['status' => 'PLACING', 'label' => 'Placing', 'caption' => 'On the conveyor', 'icon' => 'bi-inboxes'],
+                                    ['status' => 'COMPLETED', 'label' => 'Complete', 'caption' => 'Order is ready', 'icon' => 'bi-check-lg'],
+                                ] as $step)
+                                    <div class="robot-process-step" data-step="{{ $step['status'] }}">
+                                        <span class="robot-process-marker" aria-hidden="true">
+                                            <i class="bi {{ $step['icon'] }}"></i>
+                                        </span>
+                                        <strong>{{ $step['label'] }}</strong>
+                                        <small>{{ $step['caption'] }}</small>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
 
                         <div class="robot-command-summary">
                             <div>
                                 <span>Active Command</span>
                                 <strong id="activeCommandText">
-                                    {{ $activeCommand ? $activeCommand->command : 'None' }}
+                                    {{ $activeCommand ? $activeCommand->command . ($activeCommand->total > 1 ? ' ' . $activeCommand->sequence . '/' . $activeCommand->total : '') : 'None' }}
                                 </strong>
                             </div>
                             <div>
@@ -142,11 +169,6 @@
                             </div>
                         </div>
 
-                        <div class="robot-progress">
-                            @foreach(['IDLE', 'ACCEPTED', 'MOVING', 'PICKING', 'PLACING', 'COMPLETED'] as $step)
-                                <span class="robot-progress-step" data-step="{{ $step }}">{{ $step }}</span>
-                            @endforeach
-                        </div>
                     </div>
                 </div>
             </div>
@@ -174,7 +196,7 @@
                             @forelse($recentCommands as $command)
                                 <tr>
                                     <td>{{ $command->created_at?->format('M d, H:i:s') }}</td>
-                                    <td>{{ $command->command }}</td>
+                                    <td>{{ $command->command }}{{ $command->total > 1 ? ' ' . $command->sequence . '/' . $command->total : '' }}</td>
                                     <td>{{ $command->order_reference ?? '-' }}</td>
                                     <td>{{ $command->location ? 'LOCATION ' . $command->location : '-' }}</td>
                                     <td><span class="robot-status-badge">{{ $command->status }}</span></td>

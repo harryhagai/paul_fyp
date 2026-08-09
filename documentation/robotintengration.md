@@ -10,14 +10,15 @@ The ESP32 connects to the same Wi-Fi network as the computer/server running the 
 HTTP is selected because it is simple to implement, easy to test, supported by ESP32, and suitable for the demonstration. MQTT is not required for the first version.
 3. Overall Communication Flow
 1. Customer places an order.
-2. Website creates a robot command.
-3. Website sends the command to the ESP32 using HTTP over Wi-Fi.
+2. Website creates one queued robot command for each physical item in the order.
+3. The queue worker sends the oldest queued command to the ESP32 using HTTP over Wi-Fi.
 4. ESP32 validates the command.
 5. ESP32 executes the pre-taught robot trajectory.
 6. Robot picks the selected parcel.
 7. Robot places the parcel on the conveyor.
 8. ESP32 returns the operation status to the website.
-9. Website updates the order status.
+9. Website sends the next queued pick cycle, if one exists.
+10. Website updates the order after all of its pick cycles are complete.
 4. Important Design Principle
 The website does not control individual motors. It must not send step counts, servo angles, or low-level motor commands. Instead, it sends a high-level command such as PICK together with the order ID and parcel location.
 Website responsibility: tell the robot WHAT to do.
@@ -87,14 +88,15 @@ Possible error values:
 11. Complete Operation Sequence
 1. Customer places an order on the website.
 2. Website determines the parcel's stored location.
-3. Website sends a PICK command with order_id and location.
-4. ESP32 validates the command and confirms ACCEPTED.
-5. ESP32 replays the stored trajectory for the selected location.
-6. Robot picks the parcel.
-7. Robot moves to the conveyor and releases the parcel.
-8. Robot returns to HOME.
-9. ESP32 reports COMPLETED.
-10. Website updates the order status.
+3. Website adds the PICK command to its FIFO queue.
+4. The queue worker sends the command when the robot has no active operation.
+5. ESP32 validates the command and confirms ACCEPTED.
+6. ESP32 replays the stored trajectory for the selected location.
+7. Robot picks the parcel.
+8. Robot moves to the conveyor and releases the parcel.
+9. Robot returns to HOME.
+10. ESP32 reports COMPLETED.
+11. Website processes the next queued cycle or completes the order.
 12. Teach Pendant Communication
 The Android teach-pendant application is used during the teaching/setup stage. The Android application communicates with the ESP32 through Bluetooth.
 Teaching flow:
@@ -128,6 +130,7 @@ Website Developer
 •	Product and location database
 •	Order ID generation
 •	Robot command generation
+•	FIFO queue and multi-item pick-cycle management
 •	HTTP POST communication
 •	JSON request creation
 •	Receiving ESP32 responses

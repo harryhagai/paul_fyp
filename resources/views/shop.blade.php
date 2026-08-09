@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Shop - KidsStore')
+@section('hideFooter', 'true')
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/shop.css') }}">

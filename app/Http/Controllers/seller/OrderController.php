@@ -196,7 +196,7 @@ class OrderController extends Controller
             return 'Order confirmed, but robot command needs attention: ' . ($robotCommand->error ?: 'COMMAND_FAILED');
         }
 
-        return 'Order confirmed and PICK command sent to robot arm.';
+        return 'Order confirmed and added to the robot queue.';
     }
 
     private function autoCancelExpiredPendingOrders(): void

@@ -21,7 +21,10 @@
         activeLocation: document.getElementById('activeLocationText'),
         activeError: document.getElementById('activeErrorText'),
         history: document.getElementById('robotHistoryBody'),
-        visual: document.querySelector('.robot-arm-visual'),
+        processPanel: document.getElementById('robotProcessPanel'),
+        processTitle: document.getElementById('robotProcessTitle'),
+        processMessage: document.getElementById('robotProcessMessage'),
+        processFill: document.getElementById('robotProcessFill'),
         order: document.getElementById('robotOrder'),
         location: document.getElementById('robotLocation'),
         pickForm: document.getElementById('robotPickForm'),
@@ -65,7 +68,7 @@
     function statusClass(status) {
         if (['ERROR', 'STOPPED'].includes(status)) return 'status-error';
         if (status === 'COMPLETED') return 'status-complete';
-        if (['ACCEPTED', 'MOVING', 'PICKING', 'PLACING', 'PENDING'].includes(status)) return 'status-active';
+        if (['QUEUED', 'ACCEPTED', 'MOVING', 'PICKING', 'PLACING', 'PENDING'].includes(status)) return 'status-active';
         return '';
     }
 
@@ -90,11 +93,39 @@
     }
 
     function updateProgress(status) {
-        document.querySelectorAll('.robot-progress-step').forEach(function (step) {
-            step.classList.toggle('active', step.dataset.step === status);
+        const steps = ['ACCEPTED', 'MOVING', 'PICKING', 'PLACING', 'COMPLETED'];
+        const messages = {
+            IDLE: ['Ready for next command', 'The robot arm is standing by for a confirmed order.'],
+            QUEUED: ['Waiting in queue', 'This pick cycle will start as soon as the robot arm is free.'],
+            PENDING: ['Command is queued', 'Preparing the pick request for the robot arm.'],
+            ACCEPTED: ['Command accepted', 'The robot has received the order and is preparing to move.'],
+            MOVING: ['Moving to the shelf', 'The arm is travelling to the assigned product location.'],
+            PICKING: ['Picking the item', 'The gripper is collecting the product from its location.'],
+            PLACING: ['Placing on conveyor', 'The item is being transferred to the conveyor.'],
+            COMPLETED: ['Pick completed', 'The item was placed successfully and the workflow is complete.'],
+            ERROR: ['Processing interrupted', 'The command could not continue. Check the error details below.'],
+            STOPPED: ['Robot stopped', 'The current operation was stopped before completion.']
+        };
+        const currentIndex = steps.indexOf(status);
+
+        document.querySelectorAll('.robot-process-step').forEach(function (step, index) {
+            step.classList.toggle('is-current', index === currentIndex);
+            step.classList.toggle('is-complete', currentIndex >= 0 && index < currentIndex);
         });
-        if (els.visual) {
-            els.visual.classList.toggle('is-active', ['ACCEPTED', 'MOVING', 'PICKING', 'PLACING', 'PENDING'].includes(status));
+
+        if (els.processPanel) {
+            els.processPanel.classList.toggle('is-processing', ['QUEUED', 'PENDING', 'ACCEPTED', 'MOVING', 'PICKING', 'PLACING'].includes(status));
+            els.processPanel.classList.toggle('is-complete', status === 'COMPLETED');
+            els.processPanel.classList.toggle('is-error', ['ERROR', 'STOPPED'].includes(status));
+        }
+        if (els.processFill) {
+            const progress = ['QUEUED', 'PENDING'].includes(status) ? 3 : (currentIndex < 0 ? 0 : (currentIndex / (steps.length - 1)) * 100);
+            els.processFill.style.width = `${progress}%`;
+        }
+        if (els.processTitle && els.processMessage) {
+            const copy = messages[status] || messages.IDLE;
+            els.processTitle.textContent = copy[0];
+            els.processMessage.textContent = copy[1];
         }
     }
 
@@ -107,7 +138,8 @@
             return;
         }
 
-        els.activeCommand.textContent = command.command || 'None';
+        const cycle = command.total > 1 ? ` ${command.sequence}/${command.total}` : '';
+        els.activeCommand.textContent = `${command.command || 'None'}${cycle}`;
         els.activeOrder.textContent = command.order_reference || 'None';
         els.activeLocation.textContent = command.location ? `LOCATION ${command.location}` : 'None';
         els.activeError.textContent = command.error || 'None';
@@ -124,7 +156,8 @@
         els.history.innerHTML = commands.map(function (command) {
             const cls = statusClass(command.status);
             const createdAt = escapeHtml(command.created_at || '-');
-            const commandName = escapeHtml(command.command || '-');
+            const cycle = command.total > 1 ? ` ${escapeHtml(command.sequence)}/${escapeHtml(command.total)}` : '';
+            const commandName = `${escapeHtml(command.command || '-')}${cycle}`;
             const orderReference = escapeHtml(command.order_reference || '-');
             const location = command.location ? `LOCATION ${escapeHtml(command.location)}` : '-';
             const status = escapeHtml(command.status || '-');
@@ -213,7 +246,7 @@
             order_id: els.order.value,
             location: els.location.value || null
         }).then(function (payload) {
-            notify('success', 'Command Sent', payload.message || 'PICK command sent.');
+            notify('success', 'Added to Queue', payload.message || 'Order added to the robot queue.');
             return pollStatus();
         }).catch(function (error) {
             notify('error', 'Robot Error', error.message);
